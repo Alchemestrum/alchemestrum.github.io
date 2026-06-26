@@ -15,27 +15,32 @@ paginate = 1000
 
 [menu]
   [[menu.main]]
-    identifier = "posts"
-    name = "posts"
-    url = "/posts"
+    identifier = "ctf"
+    name = "ctf"
+    url = "/ctf"
     weight = 1
   [[menu.main]]
-    identifier = "tags"
-    name = "tags"
-    url = "/tags"
+    identifier = "homelab"
+    name = "homelab"
+    url = "/homelab"
     weight = 2
+  [[menu.main]]
+    identifier = "articles"
+    name = "articles"
+    url = "/articles"
+    weight = 3
   [[menu.main]]
     identifier = "cheatsheets"
     name = "cheatsheets"
     url = "/cheatsheets"
-    weight = 3
+    weight = 4
   [[menu.main]]
     identifier = "tools"
     name = "tools"
     url = "/tools"
-    weight = 4
+    weight = 5
   [[menu.main]]
     identifier = "about"
     name = "about"
     url = "/about"
-    weight = 5
+    weight = 6
