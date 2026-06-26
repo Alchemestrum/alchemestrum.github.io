@@ -1,6 +1,6 @@
 +++
 title = "Connecting Wazuh to TheHive: Automatic Case Creation from SIEM Alerts"
-date = "2026-06-26T14:00:00-05:00"
+date = "2026-06-25T18:00:00-05:00"
 tags = ["wazuh", "thehive", "homelab", "soc", "integration", "python", "case-management"]
 description = "Wiring Wazuh's custom integration framework to TheHive's REST API so every alert above a severity threshold automatically opens a tracked case."
 draft = false

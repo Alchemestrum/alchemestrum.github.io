@@ -1,6 +1,6 @@
 +++
 title = "Setting Up TheHive for SOC Case Management"
-date = "2026-06-26T10:00:00-05:00"
+date = "2026-06-25T14:00:00-05:00"
 tags = ["thehive", "homelab", "case-management", "elasticsearch", "docker", "ubuntu", "soc"]
 description = "Installing TheHive 3 on a System76 Lemur Pro — battling hardware quirks, a dead apt repository, and config format mismatches to get a working case management platform."
 draft = false
