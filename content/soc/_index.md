@@ -1,4 +1,4 @@
 ---
-title: "Triaged Alerts"
-description: "Alert investigations, incident response, and detection engineering."
+title: "SOC"
+description: "Alert investigations, detection methodology, and Splunk analysis."
 ---

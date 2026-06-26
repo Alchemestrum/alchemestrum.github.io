@@ -6,10 +6,24 @@
             <div class="content">{{ .Content }}</div>
         {{ end }}
 
-        {{ range .Data.Pages.GroupByDate "2006" }}
+        {{ if .Sections }}
+            <ul class="posts-list">
+                {{ range .Sections }}
+                    <li class="post-item">
+                        <a href="{{ .Permalink }}">
+                            <span class="post-title">{{ .Title }}</span>
+                        </a>
+                        {{ with .Description }}
+                            <span class="post-date"> — {{ . }}</span>
+                        {{ end }}
+                    </li>
+                {{ end }}
+            </ul>
+        {{ end }}
+
+        {{ range .RegularPages.GroupByDate "2006" }}
             <div class="posts-group">
                 <div class="post-year">{{ .Key }}</div>
-
                 <ul class="posts-list">
                     {{ range .Pages }}
                         <li class="post-item">
