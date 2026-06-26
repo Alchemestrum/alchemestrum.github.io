@@ -70,6 +70,12 @@ paginate = 1000
     url = "/soc/splunk"
     parent = "soc"
     weight = 3
+  [[menu.main]]
+    identifier = "soc-resources"
+    name = "Resources"
+    url = "/soc/resources"
+    parent = "soc"
+    weight = 4
 
   [[menu.main]]
     identifier = "ctf"
