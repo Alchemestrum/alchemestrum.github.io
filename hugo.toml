@@ -23,15 +23,66 @@ paginate = 1000
     url = "/homelab"
     weight = 1
   [[menu.main]]
+    identifier = "homelab-wazuh"
+    name = "Wazuh"
+    url = "/homelab/wazuh"
+    parent = "homelab"
+    weight = 1
+  [[menu.main]]
+    identifier = "homelab-thehive"
+    name = "TheHive"
+    url = "/homelab/thehive"
+    parent = "homelab"
+    weight = 2
+  [[menu.main]]
+    identifier = "homelab-integrations"
+    name = "Integrations"
+    url = "/homelab/integrations"
+    parent = "homelab"
+    weight = 3
+  [[menu.main]]
+    identifier = "homelab-ad"
+    name = "Active Directory"
+    url = "/homelab/active-directory"
+    parent = "homelab"
+    weight = 4
+
+  [[menu.main]]
     identifier = "soc"
     name = "SOC"
     url = "/soc"
     weight = 2
   [[menu.main]]
+    identifier = "soc-investigations"
+    name = "Investigations"
+    url = "/soc/investigations"
+    parent = "soc"
+    weight = 1
+  [[menu.main]]
+    identifier = "soc-methodology"
+    name = "Methodology"
+    url = "/soc/methodology"
+    parent = "soc"
+    weight = 2
+  [[menu.main]]
+    identifier = "soc-splunk"
+    name = "Splunk"
+    url = "/soc/splunk"
+    parent = "soc"
+    weight = 3
+
+  [[menu.main]]
     identifier = "ctf"
     name = "ctf"
     url = "/ctf"
     weight = 3
+  [[menu.main]]
+    identifier = "ctf-htb"
+    name = "HackTheBox"
+    url = "/ctf/htb"
+    parent = "ctf"
+    weight = 1
+
   [[menu.main]]
     identifier = "articles"
     name = "articles"
