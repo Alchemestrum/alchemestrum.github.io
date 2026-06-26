@@ -70,12 +70,6 @@ paginate = 1000
     url = "/soc/splunk"
     parent = "soc"
     weight = 3
-  [[menu.main]]
-    identifier = "soc-resources"
-    name = "Resources"
-    url = "/soc/resources"
-    parent = "soc"
-    weight = 4
 
   [[menu.main]]
     identifier = "ctf"
@@ -83,11 +77,17 @@ paginate = 1000
     url = "/ctf"
     weight = 3
   [[menu.main]]
+    identifier = "ctf-resources"
+    name = "Resources"
+    url = "/ctf/resources"
+    parent = "ctf"
+    weight = 1
+  [[menu.main]]
     identifier = "ctf-htb"
     name = "HackTheBox"
     url = "/ctf/htb"
     parent = "ctf"
-    weight = 1
+    weight = 2
 
   [[menu.main]]
     identifier = "articles"
