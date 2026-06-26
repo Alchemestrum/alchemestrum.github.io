@@ -1,4 +1,4 @@
 ---
-title: "Splunk"
+title: "Splunk BOTS"
 description: "Splunk SPL investigations using the Boss of the SOC dataset — real attack scenarios, real queries."
 ---
