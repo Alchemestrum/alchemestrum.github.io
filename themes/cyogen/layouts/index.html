@@ -44,6 +44,17 @@
   </a>
 </section>
 
+<!-- ===== UM BADGE ===== -->
+{{ range .Site.Data.academic }}
+{{ if .badge }}
+<div class="um-badge-strip">
+  <a href="{{ .badge }}" class="glightbox um-badge-link">
+    <img src="{{ .badge }}" alt="University of Miami Badge" loading="lazy">
+  </a>
+</div>
+{{ end }}
+{{ end }}
+
 <!-- ===== SECURITY STACK ===== -->
 <section class="section" id="stack">
   <div class="section-inner">
@@ -85,9 +96,6 @@
       <div class="academic-images">
         <a href="{{ .certificate }}" class="glightbox academic-cert">
           <img src="{{ .certificate }}" alt="{{ .name }} Certificate" loading="lazy">
-        </a>
-        <a href="{{ .badge }}" class="glightbox academic-badge">
-          <img src="{{ .badge }}" alt="{{ .name }} Badge" loading="lazy">
         </a>
       </div>
       <p class="academic-caption">{{ .caption }}</p>

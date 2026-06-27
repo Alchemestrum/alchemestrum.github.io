@@ -538,6 +538,28 @@ code, pre { font-family: var(--ff-mono); }
    CERTIFICATIONS
    ================================================================ */
 /* ================================================================
+   UM BADGE STRIP (below hero)
+   ================================================================ */
+.um-badge-strip {
+  display: flex;
+  justify-content: center;
+  padding: 24px 0 8px;
+  background: var(--bg);
+}
+.um-badge-link {
+  display: block;
+  cursor: zoom-in;
+  transition: transform 0.25s, opacity 0.25s;
+}
+.um-badge-link:hover { transform: translateY(-3px); opacity: 0.85; }
+.um-badge-link img {
+  display: block;
+  max-height: 120px;
+  width: auto;
+  object-fit: contain;
+}
+
+/* ================================================================
    ACADEMIC CREDENTIAL BLOCK
    ================================================================ */
 .academic-block {
