@@ -115,7 +115,7 @@ reflex to make the dashboard look clean.
 For the chsh false positive: suppression, not deletion.
 
 The rule is tuned. The event stays in OpenSearch. If I ever need to audit
-what rootcheck was doing on the M4800 in those first hours after deployment,
+what rootcheck was doing on the monitoring server in those first hours after deployment,
 the data is there. If a future analyst questions why there's a suppression
 rule for chsh, the original alert is the answer.
 

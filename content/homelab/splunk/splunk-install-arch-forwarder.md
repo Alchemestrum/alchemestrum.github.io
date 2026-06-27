@@ -13,12 +13,12 @@ use Splunk for Boss of the SOC investigations and SPL practice.
 
 ## Hardware
 
-- **M4800** (Debian, 16GB RAM, `10.0.42.114`) — Splunk Enterprise server
-- **7900x** (Arch Linux) — Splunk Universal Forwarder, daily driver
+- **SIEM Server** (Debian, `10.0.42.114`) — Splunk Enterprise server
+- **Arch Linux Workstation** — Splunk Universal Forwarder, daily driver
 
 ## Disabling Wazuh
 
-Since both SIEMs share the M4800, Wazuh gets disabled before Splunk starts.
+Since both SIEMs share the same server, Wazuh gets disabled before Splunk starts.
 Switching between them is a clean service toggle:
 
 ```bash
@@ -203,7 +203,7 @@ searchable in Splunk.
 
 ## Result
 
-Splunk Enterprise is running on M4800 at `http://10.0.42.114:8000`. The 7900x
+Splunk Enterprise is running on the SIEM server at `http://10.0.42.114:8000`. The Arch Linux workstation
 is forwarding both package manager history and live system logs. Two data
 sources, one forwarder, one Splunk instance.
 

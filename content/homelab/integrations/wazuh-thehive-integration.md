@@ -31,7 +31,7 @@ an API key. Copy it — this goes into the Wazuh config.
 
 ## The Integration Script
 
-On the **Wazuh manager (M4800 — `10.0.42.114`)**:
+On the **Wazuh manager (`10.0.42.114`)**:
 
 ```bash
 sudo nano /var/ossec/integrations/custom-thehive
@@ -155,7 +155,7 @@ No manual trigger required.
 The pipeline is now fully connected:
 
 ```
-Agent (7900x / DC01 / M4800)
+Agent (Arch Linux Workstation / DC01 / SIEM Server)
   → Wazuh Manager
     → custom-thehive script
       → TheHive REST API

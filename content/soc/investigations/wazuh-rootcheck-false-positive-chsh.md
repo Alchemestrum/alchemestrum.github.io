@@ -8,7 +8,7 @@ draft = false
 
 ## The Alert
 
-Shortly after deploying Wazuh on my Debian-based monitoring server (M4800), the
+Shortly after deploying Wazuh on my Debian-based monitoring server, the
 rootcheck module fired its first alert:
 
 ```
@@ -75,7 +75,7 @@ it generates noise on Debian that needs to be tuned out.
 ## Remediation — Suppressing the False Positive
 
 To prevent this alert from firing again, create a custom suppression rule in
-Wazuh. On the manager (M4800):
+Wazuh. On the manager:
 
 ```bash
 sudo nano /var/ossec/etc/rules/local_rules.xml

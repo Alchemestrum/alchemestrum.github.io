@@ -1,5 +1,5 @@
 +++
-title = "Building a SIEM from Scratch: Wazuh on a Dell M4800"
+title = "Building a SIEM from Scratch: Wazuh on Dedicated Hardware"
 date = "2026-06-25T10:00:00-05:00"
 tags = ["wazuh", "siem", "homelab", "debian", "active-directory", "soc"]
 description = "Installing Wazuh all-in-one on a Debian server, registering agents across Arch Linux and Windows Server 2022, and documenting every failure along the way."
@@ -8,16 +8,15 @@ draft = false
 
 Every SOC runs a SIEM. For this lab, that's Wazuh — an open source platform
 that handles log collection, threat detection, and alerting across every
-machine on the network. This post covers the full install on a Dell M4800
-running Debian, connecting agents on Arch Linux and Windows Server, and every
+machine on the network. This post covers the full install on a dedicated Debian
+server, connecting agents on Arch Linux and Windows Server, and every
 problem that came up in between.
 
 ## Hardware
 
-The M4800 is a Dell Precision workstation-class laptop repurposed as a
-dedicated server. 16GB RAM, 500GB NVMe, Debian stable. It lives on the LAN
-at `10.0.42.114` with no GUI — just SSH and a 4K display attached for local
-access when needed.
+The SIEM server is a repurposed machine running Debian stable — 16GB RAM,
+500GB NVMe, living on the LAN at `10.0.42.114` with no GUI. Just SSH and a
+display attached for local access when needed.
 
 ## The Problem with 4K TTY
 
@@ -95,7 +94,7 @@ sudo systemctl restart wazuh-dashboard
 
 ## Issue: OpenSearch Causing Constant Fan Spin
 
-With the dashboard up, the M4800 fans were spinning continuously under no
+With the dashboard up, the server fans were spinning continuously under no
 meaningful load. The culprit was the default JVM heap size for the indexer —
 1024MB. A heap that small causes constant garbage collection cycles, which
 reads as sustained CPU usage.
@@ -115,7 +114,7 @@ Fans dropped back to idle within a minute. 2GB is a good balance for a
 small lab — enough headroom to avoid GC thrash, not so much it starves
 everything else on a 16GB machine.
 
-## Registering the First Agent — Arch Linux (7900x)
+## Registering the First Agent — Arch Linux Workstation
 
 Wazuh has no official Arch Linux package. The AUR covers it:
 
@@ -158,21 +157,21 @@ sudo apt-get install --only-upgrade wazuh-manager wazuh-indexer wazuh-dashboard
 sudo systemctl restart wazuh-manager wazuh-indexer wazuh-dashboard
 ```
 
-With versions aligned, the 7900x agent connected and appeared in the
+With versions aligned, the Arch Linux workstation agent connected and appeared in the
 dashboard.
 
 ![Arch Linux agent connected](/images/wazuh-agent_7900xconnected.png)
 
 ## Critical: Never Install wazuh-agent on the Manager Machine
 
-While setting up monitoring for the M4800 itself, there was a temptation to
+While setting up monitoring for the SIEM server itself, there was a temptation to
 install `wazuh-agent` on the same machine as the manager. Don't.
 
 The `wazuh-manager` and `wazuh-agent` packages conflict — installing one
 removes the other. The manager already monitors itself via a built-in local
 agent (ID 000). No separate agent package is needed or wanted on the manager.
 
-Installing `wazuh-agent` on M4800 wiped the manager package and reset the
+Installing `wazuh-agent` on the SIEM server wiped the manager package and reset the
 API security database, invalidating all credentials. Recovery required a full
 reinstall with `--overwrite`:
 
@@ -210,9 +209,9 @@ Three endpoints reporting into Wazuh:
 
 | Agent | OS | Role |
 |---|---|---|
-| 7900x | Arch Linux | Daily driver / lab host |
+| Arch Linux Workstation | Arch Linux | Daily driver / lab host |
 | DC01 | Windows Server 2022 | Active Directory domain controller |
-| M4800 | Debian (local agent 000) | Wazuh manager itself |
+| SIEM Server | Debian (local agent 000) | Wazuh manager itself |
 
 The SIEM is collecting logs, running rules, and generating alerts. Next step:
 a case management platform to track what needs action — that's TheHive, covered
