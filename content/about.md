@@ -12,7 +12,7 @@ These days I spend a lot of my free time on platforms like HackTheBox, TryHackMe
 
 The homelab documented on this site is the same energy applied to real infrastructure. A full SOC stack built on actual hardware, generating real alerts from live machines, broken more than once, and rebuilt every time. Every post here is documentation of something I actually did, hit a wall on, figured out, and wrote down so the next version of me (or anyone else in the same position) doesn't have to start from zero.
 
-I also play CTF competitions when time allows. Web, pwn, rev, crypto. Wherever the challenge takes me.
+I also enjoy the offensive side. Still very much a script kiddie, but working on it. There is something that clicks when you start understanding how attacks actually work. Defending a network is a completely different exercise when you know what the attacker is thinking, and that perspective is worth chasing.
 
 Find me on:
 - GitHub: [Alchemestrum](https://github.com/Alchemestrum)
