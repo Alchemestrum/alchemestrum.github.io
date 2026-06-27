@@ -1,6 +1,6 @@
 baseURL = "https://cyogen.net/"
 languageCode = "en-us"
-title = "cyogen"
+title = "alchemestrum"
 theme = "cyogen"
 paginate = 1000
 
@@ -9,7 +9,7 @@ paginate = 1000
   keywords = "soc, cybersecurity, homelab, wazuh, splunk, ctf, security"
 
   [params.social]
-    github = "https://github.com/Cyogen"
+    github = "https://github.com/Alchemestrum"
 
 
 [menu]
