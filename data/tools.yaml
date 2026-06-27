@@ -13,8 +13,8 @@
 - name: TheHive
   category: Case Management
   color: "#f0a030"
-  icon_type: fallback
-  fallback: TH
+  icon_type: local
+  local: /images/tools/thehive.png
 
 - name: Elasticsearch
   category: Search & Storage
@@ -31,8 +31,8 @@
 - name: Nmap
   category: Network Scanner
   color: "#4caf50"
-  icon_type: fallback
-  fallback: NM
+  icon_type: local
+  local: /images/tools/nmap.png
 
 - name: Docker
   category: Containers
