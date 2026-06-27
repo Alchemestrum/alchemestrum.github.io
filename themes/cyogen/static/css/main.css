@@ -281,7 +281,7 @@ code, pre { font-family: var(--ff-mono); }
   justify-content: center;
   position: relative;
   overflow: hidden;
-  padding: var(--nav-h) 24px 80px;
+  padding: var(--nav-h) 24px 340px;
   text-align: center;
 }
 .hero-grid {
@@ -541,18 +541,21 @@ code, pre { font-family: var(--ff-mono); }
    UM BADGE (inside hero, below CTAs)
    ================================================================ */
 .um-badge-link {
-  display: flex;
-  justify-content: center;
-  margin-top: 36px;
+  position: absolute;
+  bottom: 64px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: block;
   cursor: zoom-in;
-  transition: transform 0.25s, opacity 0.25s;
+  transition: opacity 0.25s;
+  z-index: 1;
 }
-.um-badge-link:hover { transform: translateY(-3px); opacity: 0.85; }
+.um-badge-link:hover { opacity: 0.85; }
 .um-badge-link img {
   display: block;
   max-height: 300px;
   width: auto;
-  max-width: 100%;
+  max-width: 90vw;
   object-fit: contain;
 }
 
