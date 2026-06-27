@@ -1,6 +1,6 @@
 +++
 title = "Installing Splunk Enterprise and Forwarding Arch Linux Logs"
-date = "2026-06-26T20:00:00-05:00"
+date = "2026-06-26T08:00:00-05:00"
 tags = ["splunk", "soc", "siem", "arch-linux", "syslog-ng", "homelab"]
 description = "Standing up Splunk Enterprise on a Debian server, wiring up a Universal Forwarder on Arch Linux, and fighting through syslog-ng to get real system logs flowing."
 draft = false
