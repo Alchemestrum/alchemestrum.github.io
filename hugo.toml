@@ -23,29 +23,35 @@ paginate = 1000
     url = "/homelab"
     weight = 1
   [[menu.main]]
+    identifier = "homelab-splunk"
+    name = "Splunk"
+    url = "/homelab/splunk"
+    parent = "homelab"
+    weight = 1
+  [[menu.main]]
     identifier = "homelab-wazuh"
     name = "Wazuh"
     url = "/homelab/wazuh"
     parent = "homelab"
-    weight = 1
+    weight = 2
   [[menu.main]]
     identifier = "homelab-thehive"
     name = "TheHive"
     url = "/homelab/thehive"
     parent = "homelab"
-    weight = 2
+    weight = 3
   [[menu.main]]
     identifier = "homelab-integrations"
     name = "Integrations"
     url = "/homelab/integrations"
     parent = "homelab"
-    weight = 3
+    weight = 4
   [[menu.main]]
     identifier = "homelab-ad"
     name = "Active Directory"
     url = "/homelab/active-directory"
     parent = "homelab"
-    weight = 4
+    weight = 5
 
   [[menu.main]]
     identifier = "soc"
