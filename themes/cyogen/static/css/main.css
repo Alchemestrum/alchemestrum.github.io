@@ -537,6 +537,56 @@ code, pre { font-family: var(--ff-mono); }
 /* ================================================================
    CERTIFICATIONS
    ================================================================ */
+/* ================================================================
+   ACADEMIC CREDENTIAL BLOCK
+   ================================================================ */
+.academic-block {
+  text-align: center;
+  margin-bottom: 52px;
+  padding: 36px 40px;
+  background: rgba(79,142,247,0.04);
+  border: 1px solid rgba(79,142,247,0.18);
+  border-radius: var(--radius-lg);
+}
+.academic-images {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 28px;
+  flex-wrap: wrap;
+  margin-bottom: 18px;
+}
+.academic-cert,
+.academic-badge {
+  display: block;
+  border-radius: var(--radius);
+  overflow: hidden;
+  cursor: zoom-in;
+  transition: transform 0.25s, opacity 0.25s;
+}
+.academic-cert:hover,
+.academic-badge:hover { transform: translateY(-3px); opacity: 0.85; }
+.academic-cert img {
+  display: block;
+  max-height: 340px;
+  max-width: 580px;
+  width: auto;
+  object-fit: contain;
+}
+.academic-badge img {
+  display: block;
+  max-height: 160px;
+  max-width: 160px;
+  width: auto;
+  object-fit: contain;
+}
+.academic-caption {
+  font-size: 0.82rem;
+  color: var(--text-3);
+  letter-spacing: 0.02em;
+  margin: 0;
+}
+
 .certs-featured {
   display: flex;
   justify-content: center;

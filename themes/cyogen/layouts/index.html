@@ -79,6 +79,21 @@
       <span class="section-label">Credentials</span>
       <h2 class="section-title">Certifications &amp; Badges</h2>
     </div>
+
+    {{ range .Site.Data.academic }}
+    <div class="academic-block">
+      <div class="academic-images">
+        <a href="{{ .certificate }}" class="glightbox academic-cert">
+          <img src="{{ .certificate }}" alt="{{ .name }} Certificate" loading="lazy">
+        </a>
+        <a href="{{ .badge }}" class="glightbox academic-badge">
+          <img src="{{ .badge }}" alt="{{ .name }} Badge" loading="lazy">
+        </a>
+      </div>
+      <p class="academic-caption">{{ .caption }}</p>
+    </div>
+    {{ end }}
+
     <div class="certs-featured">
       {{ range where .Site.Data.certs "featured" true }}
         <a href="{{ .badge }}" class="glightbox cert-img-link cert-img-featured" data-title="{{ .name }} — {{ .detail }}">
