@@ -829,7 +829,8 @@ code, pre { font-family: var(--ff-mono); }
 .list-content img {
   display: block;
   margin: 24px auto 0;
-  max-width: 100%;
+  max-width: 480px;
+  width: 100%;
   border-radius: var(--radius-lg);
   box-shadow: 0 8px 32px rgba(0,0,0,0.4);
   cursor: zoom-in;
