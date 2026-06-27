@@ -56,7 +56,7 @@
   category: Enterprise
   color: "#0078d4"
   icon_type: simpleicons
-  slug: windows11
+  slug: windows
 
 - name: Active Directory
   category: Identity & Access

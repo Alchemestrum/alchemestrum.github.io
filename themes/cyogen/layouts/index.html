@@ -98,16 +98,16 @@
 
     <div class="certs-featured">
       {{ range where .Site.Data.certs "featured" true }}
-        <a href="{{ .badge }}" class="glightbox cert-img-link cert-img-featured" data-title="{{ .name }} — {{ .detail }}">
-          <img src="{{ .badge }}" alt="{{ .name }} — {{ .detail }}" loading="lazy">
+        <a href="{{ .badge }}" class="glightbox cert-img-link cert-img-featured">
+          <img src="{{ .badge }}" alt="{{ .name }}" loading="lazy">
         </a>
       {{ end }}
     </div>
     <div class="certs-grid">
       {{ range where .Site.Data.certs "featured" "!=" true }}
         {{ if .badge }}
-          <a href="{{ .badge }}" class="glightbox cert-img-link" data-title="{{ .name }} — {{ .detail }}">
-            <img src="{{ .badge }}" alt="{{ .name }} — {{ .detail }}" loading="lazy">
+          <a href="{{ .badge }}" class="glightbox cert-img-link">
+            <img src="{{ .badge }}" alt="{{ .name }}" loading="lazy">
           </a>
         {{ end }}
       {{ end }}

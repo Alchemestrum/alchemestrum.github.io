@@ -4,7 +4,6 @@ document.addEventListener('DOMContentLoaded', function () {
       const a = document.createElement('a');
       a.href = img.src;
       a.className = 'glightbox';
-      a.dataset.title = img.alt || '';
       img.parentNode.insertBefore(a, img);
       a.appendChild(img);
     }
