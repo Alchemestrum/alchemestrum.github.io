@@ -69,3 +69,9 @@
   color: "#e95420"
   icon_type: fallback
   fallback: KVM
+
+- name: Parrot OS
+  category: Red Team
+  color: "#5bc0eb"
+  icon_type: simpleicons
+  slug: parrotsecurity

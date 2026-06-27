@@ -535,6 +535,55 @@ code, pre { font-family: var(--ff-mono); }
 }
 
 /* ================================================================
+   PROJECTS TABLE
+   ================================================================ */
+.projects-table {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.project-row {
+  display: grid;
+  grid-template-columns: 220px 1fr auto;
+  align-items: center;
+  gap: 24px;
+  padding: 16px 20px;
+  border-radius: var(--radius);
+  text-decoration: none;
+  transition: background 0.2s;
+}
+.project-row:hover { background: var(--bg-card-h); }
+.project-name {
+  font-family: var(--ff-head);
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--accent);
+  white-space: nowrap;
+}
+.project-desc {
+  font-size: 0.9rem;
+  color: var(--text-2);
+}
+.project-arrow {
+  color: var(--text-3);
+  flex-shrink: 0;
+  transition: transform 0.2s, color 0.2s;
+}
+.project-row:hover .project-arrow {
+  transform: translateX(4px);
+  color: var(--accent);
+}
+@media (max-width: 768px) {
+  .project-row {
+    grid-template-columns: 1fr auto;
+    gap: 12px;
+  }
+  .project-name { grid-column: 1; }
+  .project-desc { grid-column: 1; font-size: 0.82rem; }
+  .project-arrow { grid-row: 1; grid-column: 2; }
+}
+
+/* ================================================================
    CERTIFICATIONS
    ================================================================ */
 /* ================================================================

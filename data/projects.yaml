@@ -1,0 +1,27 @@
+- name: "Wazuh: TheHive Integration"
+  description: "Python script automating alert-to-case pipeline with MITRE tagging"
+  url: "https://alchemestrum.github.io/homelab/integrations"
+
+- name: "Kerberoasting Lab"
+  description: "Windows attack and defense: Kerberoasting simulation and detection"
+  url: "https://github.com/Alchemestrum/Kerberoasting"
+
+- name: "StuxBot Hunting"
+  description: "Threat hunting exercise tracking a StuxBot RAT across endpoint logs"
+  url: "https://github.com/Alchemestrum/HuntingStuxbot"
+
+- name: "SPL Lab"
+  description: "Splunk SPL usage, log analysis, and detection rule development"
+  url: "https://github.com/Alchemestrum/Homelab-Detection"
+
+- name: "Network Traffic Analysis"
+  description: "Packet analysis and anomaly detection with Wireshark"
+  url: "https://github.com/Alchemestrum/NTA"
+
+- name: "PCAP Automation"
+  description: "Automated PCAP analysis pipeline with HTML report output"
+  url: "https://github.com/Alchemestrum/PCAP_automation"
+
+- name: "HTB Season Bot"
+  description: "Discord bot that auto-creates solver-only channels when HTB root flags are submitted"
+  url: "https://github.com/Alchemestrum/htb-season-bot"

@@ -121,6 +121,30 @@
 </section>
 {{ end }}
 
+<!-- ===== PROJECTS ===== -->
+{{ if .Site.Data.projects }}
+<section class="section section-alt" id="projects">
+  <div class="section-inner">
+    <div class="section-header">
+      <span class="section-label">Work</span>
+      <h2 class="section-title">Projects</h2>
+      <p class="section-description">Labs, tooling, and investigations — documented and open.</p>
+    </div>
+    <div class="projects-table">
+      {{ range .Site.Data.projects }}
+      <a href="{{ .url }}" class="project-row" target="_blank" rel="noopener">
+        <span class="project-name">{{ .name }}</span>
+        <span class="project-desc">{{ .description }}</span>
+        <svg class="project-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+          <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+        </svg>
+      </a>
+      {{ end }}
+    </div>
+  </div>
+</section>
+{{ end }}
+
 <!-- ===== RECENT POSTS ===== -->
 <section class="section" id="work">
   <div class="section-inner">
