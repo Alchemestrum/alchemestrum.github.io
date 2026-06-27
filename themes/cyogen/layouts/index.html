@@ -81,15 +81,11 @@
     </div>
     <div class="certs-grid">
       {{ range .Site.Data.certs }}
-      {{ if .url }}
-        <a href="{{ .url }}" target="_blank" rel="noopener" class="cert-card">
-      {{ else }}
-        <div class="cert-card">
-      {{ end }}
+      <div class="cert-card">
         {{ if .badge }}
-          <div class="cert-badge-wrap">
-            <img src="{{ .badge }}" alt="{{ .name }} badge" loading="lazy">
-          </div>
+          <a href="{{ .badge }}" class="glightbox cert-badge-wrap" data-title="{{ .name }} — {{ .detail }}">
+            <img src="{{ .badge }}" alt="{{ .name }} — {{ .detail }}" loading="lazy">
+          </a>
         {{ else }}
           <div class="cert-badge-placeholder">
             <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
@@ -101,7 +97,7 @@
           <div class="cert-name">{{ .name }}</div>
           <div class="cert-detail">{{ .detail }}</div>
         </div>
-      {{ if .url }}</a>{{ else }}</div>{{ end }}
+      </div>
       {{ end }}
     </div>
   </div>
