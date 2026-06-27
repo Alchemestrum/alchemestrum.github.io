@@ -8,4 +8,4 @@ title = 'Tools'
 
 A Discord bot for Hack The Box seasonal servers. Automatically creates dedicated channels for seasonal machines when members earn root, restricting access to confirmed solvers only.
 
-[Source Code](https://github.com/Cyogen/htb-season-bot) · Invite link coming soon
+[Source Code](https://github.com/Alchemestrum/htb-season-bot) · Invite link coming soon
