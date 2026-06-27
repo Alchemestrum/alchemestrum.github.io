@@ -49,9 +49,7 @@ the install completes successfully.
 
 Starting Splunk with `sudo` produces:
 
-```
-Running Splunk Enterprise as root is deprecated and will be removed in a future release.
-```
+> Running Splunk Enterprise as root is deprecated and will be removed in a future release.
 
 Splunk refuses to start without explicitly acknowledging the root flag. The
 correct fix is a dedicated service account:
@@ -160,11 +158,9 @@ But the conf.d file defined a new `systemd-journal()` source — and the
 default config already has one. Running two journal sources with the same
 namespace crashes syslog-ng:
 
-```
-systemd-journal namespace already in use; namespace='*'
-The configuration must not contain more than one systemd-journal() source
-with the same namespace() option
-```
+> systemd-journal namespace already in use; namespace='\*'
+> The configuration must not contain more than one systemd-journal() source
+> with the same namespace() option
 
 #### Fix — Use the Existing Source
 
