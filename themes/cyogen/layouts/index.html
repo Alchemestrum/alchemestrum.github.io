@@ -51,7 +51,7 @@
       <div class="tool-card" style="--tool-color: {{ .color }}">
         <div class="tool-icon-wrap">
           {{ if eq .icon_type "simpleicons" }}
-            {{ $hex := .color | strings.TrimPrefix "#" }}
+            {{ $hex := .color | replaceRE "^#" "" }}
             <img src="https://cdn.simpleicons.org/{{ .slug }}/{{ $hex }}" alt="{{ .name }}" width="40" height="40" loading="lazy">
           {{ else }}
             <div class="tool-icon-fallback">{{ .fallback }}</div>
