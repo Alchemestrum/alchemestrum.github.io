@@ -537,6 +537,11 @@ code, pre { font-family: var(--ff-mono); }
 /* ================================================================
    CERTIFICATIONS
    ================================================================ */
+.certs-featured {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 32px;
+}
 .certs-grid {
   display: flex;
   flex-wrap: wrap;
@@ -558,6 +563,10 @@ code, pre { font-family: var(--ff-mono); }
   width: auto;
   max-width: 260px;
   object-fit: contain;
+}
+.cert-img-featured img {
+  max-height: 260px;
+  max-width: 480px;
 }
 
 /* ================================================================

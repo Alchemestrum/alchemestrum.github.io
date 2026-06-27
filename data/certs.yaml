@@ -1,3 +1,8 @@
+- name: "HackTheBox"
+  detail: "XP Profile"
+  badge: /images/certs/htb_xp_card.png
+  featured: true
+
 - name: "TryHackMe"
   detail: "Cat Linux"
   badge: /images/certs/catLinux.png
@@ -13,7 +18,3 @@
 - name: "TryHackMe"
   detail: "World Wide Web"
   badge: /images/certs/www.png
-
-- name: "HackTheBox"
-  detail: "XP Profile"
-  badge: /images/certs/htb_xp_card.png
