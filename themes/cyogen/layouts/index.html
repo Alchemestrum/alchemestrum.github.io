@@ -81,23 +81,11 @@
     </div>
     <div class="certs-grid">
       {{ range .Site.Data.certs }}
-      <div class="cert-card">
         {{ if .badge }}
-          <a href="{{ .badge }}" class="glightbox cert-badge-wrap" data-title="{{ .name }} — {{ .detail }}">
+          <a href="{{ .badge }}" class="glightbox cert-img-link" data-title="{{ .name }} — {{ .detail }}">
             <img src="{{ .badge }}" alt="{{ .name }} — {{ .detail }}" loading="lazy">
           </a>
-        {{ else }}
-          <div class="cert-badge-placeholder">
-            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
-              <circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/>
-            </svg>
-          </div>
         {{ end }}
-        <div class="cert-info">
-          <div class="cert-name">{{ .name }}</div>
-          <div class="cert-detail">{{ .detail }}</div>
-        </div>
-      </div>
       {{ end }}
     </div>
   </div>
