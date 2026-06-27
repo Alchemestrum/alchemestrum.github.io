@@ -10,7 +10,7 @@ paginate = 1000
   keywords = "ctf, security, hacking, writeups, reverse engineering"
   defaultTheme = "dark"
 
-  customCSS = ["https://cdn.jsdelivr.net/npm/glightbox/dist/css/glightbox.min.css"]
+  customCSS = ["https://cdn.jsdelivr.net/npm/glightbox/dist/css/glightbox.min.css", "/css/custom.css"]
   customJS  = ["https://cdn.jsdelivr.net/npm/glightbox/dist/js/glightbox.min.js", "/js/lightbox-init.js"]
 
   [params.social]
