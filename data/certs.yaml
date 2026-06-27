@@ -1,8 +1,71 @@
+# HTB XP card — featured hero position
 - name: "HackTheBox"
   detail: "XP Profile"
   badge: /images/certs/htb_xp_card.png
   featured: true
 
+# HTB badges — SOC-core skills first
+- name: "HackTheBox"
+  detail: "Incident Handling"
+  badge: /images/certs/htb_incident_handling.png
+
+- name: "HackTheBox"
+  detail: "SIEM Fundamentals"
+  badge: /images/certs/htb_siem_fundamentals.png
+
+- name: "HackTheBox"
+  detail: "Windows Event Logs"
+  badge: /images/certs/htb_win_event_logs.png
+
+- name: "HackTheBox"
+  detail: "Splunk"
+  badge: /images/certs/htb_splunk.png
+
+- name: "HackTheBox"
+  detail: "IDS/IPS"
+  badge: /images/certs/htb_ids_ips.png
+
+- name: "HackTheBox"
+  detail: "Active Directory: Attack & Defend"
+  badge: /images/certs/htb_AD_attack_defend.png
+
+- name: "HackTheBox"
+  detail: "Vulnerability Assessment"
+  badge: /images/certs/htb_vuln_assessment.png
+
+- name: "HackTheBox"
+  detail: "Nmap Enumeration"
+  badge: /images/certs/htb_nmap_enumeration.png
+
+- name: "HackTheBox"
+  detail: "Metasploit Framework"
+  badge: /images/certs/htb_metasploit_framework.png
+
+- name: "HackTheBox"
+  detail: "Password Cracking"
+  badge: /images/certs/htb_cracking.png
+
+- name: "HackTheBox"
+  detail: "Shell Payloads"
+  badge: /images/certs/htb_shell_payloads.png
+
+- name: "HackTheBox"
+  detail: "Bash Scripting"
+  badge: /images/certs/htb_bash_scripting.png
+
+- name: "HackTheBox"
+  detail: "Java Deobfuscation"
+  badge: /images/certs/htb_java_deobfuscate.png
+
+- name: "HackTheBox"
+  detail: "2 Years"
+  badge: /images/certs/htb_2_year.png
+
+- name: "HackTheBox"
+  detail: "1 Year"
+  badge: /images/certs/htb_1_year.png
+
+# TryHackMe badges
 - name: "TryHackMe"
   detail: "Cat Linux"
   badge: /images/certs/catLinux.png
