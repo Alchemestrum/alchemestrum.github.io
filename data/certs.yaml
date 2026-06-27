@@ -1,14 +1,19 @@
-- name: "University of Miami"
-  detail: "Cybersecurity Program"
-  badge: /images/certs/um.png
-  url: ""
+- name: "TryHackMe"
+  detail: "Cat Linux"
+  badge: /images/certs/catLinux.png
+  url: "https://tryhackme.com/Alchemestrum/badges/catlinux"
 
 - name: "TryHackMe"
-  detail: "Top X% — Active"
-  badge: /images/certs/tryhackme.png
-  url: "https://tryhackme.com/p/cyogen"
+  detail: "Networking Nerd"
+  badge: /images/certs/networkingnerd.png
+  url: "https://tryhackme.com/Alchemestrum/badges/networkingnerd"
 
-- name: "HackTheBox Academy"
-  detail: "SOC Analyst Path"
-  badge: /images/certs/htb-academy.png
-  url: ""
+- name: "TryHackMe"
+  detail: "Wireshark"
+  badge: /images/certs/wireshark.png
+  url: "https://tryhackme.com/Alchemestrum/badges/wireshark"
+
+- name: "TryHackMe"
+  detail: "World Wide Web"
+  badge: /images/certs/www.png
+  url: "https://tryhackme.com/Alchemestrum/badges/www"
