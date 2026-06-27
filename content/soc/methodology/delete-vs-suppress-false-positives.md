@@ -67,7 +67,7 @@ The alert no longer fires. The original log is untouched in the indexer.
 
 In **Splunk Enterprise Security**, this is a Notable Event suppression. You
 search for the false positive, flag it, define the suppression criteria, and
-it stops appearing in the analyst queue — while the raw event stays in the
+it stops appearing in the analyst queue: while the raw event stays in the
 index forever.
 
 ## Why the Difference Matters
@@ -78,14 +78,14 @@ This isn't a technical preference. It's an operational and legal one.
 actually happened on a system at a specific time. In a real environment,
 those logs may be subject to:
 
-- **Retention policies** — compliance frameworks like PCI-DSS, SOC 2, and
+- **Retention policies**: compliance frameworks like PCI-DSS, SOC 2, and
   HIPAA mandate minimum log retention periods. Deleting events can put the
   organization out of compliance even if the events themselves were harmless.
-- **Forensic timelines** — during an incident investigation, analysts build
+- **Forensic timelines**: during an incident investigation, analysts build
   timelines of everything that happened on a system. A gap where logs were
   deleted creates ambiguity. Was it a false positive that got cleaned up, or
   did someone remove evidence?
-- **Audit trails** — in regulated industries, auditors want to see an
+- **Audit trails**: in regulated industries, auditors want to see an
   unbroken log record. Selective deletion raises questions.
 
 **Suppression keeps the evidence. It just stops it from generating work.**
@@ -98,16 +98,16 @@ false positive rate metrics. That's the right outcome.
 
 Deletion isn't always wrong. There are legitimate cases:
 
-- **Test data contamination** — you ran agent tests or scans that flooded
+- **Test data contamination**: you ran agent tests or scans that flooded
   the SIEM with thousands of irrelevant events before the environment was
   production-ready. Cleaning those up before go-live is reasonable.
-- **PII exposure** — a misconfigured log source accidentally ingested data
+- **PII exposure**: a misconfigured log source accidentally ingested data
   it shouldn't have (passwords, SSNs, card numbers). Deletion may be
   required by policy to contain the exposure.
-- **Storage constraints** — in a resource-limited homelab, purging old
+- **Storage constraints**: in a resource-limited homelab, purging old
   low-value logs to free up indexer space is a practical tradeoff.
 
-In all three cases, deletion is a deliberate, documented decision — not a
+In all three cases, deletion is a deliberate, documented decision: not a
 reflex to make the dashboard look clean.
 
 ## What I Did
@@ -127,13 +127,13 @@ for a SOC, home lab or otherwise.
 Every time you close a false positive, you're making a choice about log
 integrity. The correct default in a SOC is:
 
-1. **Investigate** — verify the alert is actually a false positive
-2. **Tune** — suppress at the rule layer so it doesn't recur
-3. **Document** — record why you suppressed it and what you verified
-4. **Retain** — leave the original event in the index
+1. **Investigate**: verify the alert is actually a false positive
+2. **Tune**: suppress at the rule layer so it doesn't recur
+3. **Document**: record why you suppressed it and what you verified
+4. **Retain**: leave the original event in the index
 
 Delete only when you have a documented reason that goes beyond "it's
 cluttering my dashboard."
 
-**Alert status: Suppressed — False Positive**
-**Data retained: Yes — original event preserved in OpenSearch index**
+**Alert status: Suppressed: False Positive**
+**Data retained: Yes: original event preserved in OpenSearch index**

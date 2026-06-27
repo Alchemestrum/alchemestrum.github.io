@@ -1,8 +1,8 @@
 +++
-title = "HTB Starting Point — Oopsie"
+title = "HTB Starting Point: Oopsie"
 date = "2026-03-06T00:00:00-05:00"
 tags = ["htb", "starting-point", "linux", "web", "cookie-manipulation", "idor", "file-upload", "rce", "privesc", "path-hijack", "suid", "retired"]
-description = "Full walkthrough of Hack The Box Oopsie — web enumeration, IDOR/cookie manipulation to reach the upload page, PHP reverse shell, credential harvesting for lateral movement, and SUID PATH hijack to root."
+description = "Full walkthrough of Hack The Box Oopsie: web enumeration, IDOR/cookie manipulation to reach the upload page, PHP reverse shell, credential harvesting for lateral movement, and SUID PATH hijack to root."
 draft = false
 +++
 
@@ -11,7 +11,7 @@ draft = false
 | Field       | Value                              |
 |-------------|------------------------------------|
 | Name        | Oopsie                             |
-| Platform    | Hack The Box — Starting Point      |
+| Platform    | Hack The Box: Starting Point      |
 | Tier        | Tier 2                             |
 | Difficulty  | Very Easy                          |
 | OS          | Linux (Ubuntu 18.04 Bionic)        |
@@ -44,14 +44,14 @@ PORT   STATE SERVICE VERSION
 
 Two open ports:
 
-- **22/tcp** — OpenSSH 7.6p1 Ubuntu 4ubuntu0.3
-- **80/tcp** — Apache httpd 2.4.29, page title "Welcome"
+- **22/tcp**: OpenSSH 7.6p1 Ubuntu 4ubuntu0.3
+- **80/tcp**: Apache httpd 2.4.29, page title "Welcome"
 
 The SSH version fingerprints to Ubuntu Bionic (18.04) via launchpad.net.
 
 ---
 
-## 2. Web Enumeration — Port 80
+## 2. Web Enumeration: Port 80
 
 Navigating to `http://10.10.10.28/` shows a static "MegaCorp Automotive" welcome page. There is no login form visible on the landing page.
 
@@ -97,7 +97,7 @@ The `/uploads/` directory returns 403 at this stage (access forbidden without pr
 
 ---
 
-## 3. Logging In — Admin Credentials from Archetype
+## 3. Logging In: Admin Credentials from Archetype
 
 The admin credentials from the previous Starting Point box (Archetype) work here:
 
@@ -114,7 +114,7 @@ This action require super admin rights.
 
 ---
 
-## 4. Cookie Manipulation and IDOR — Reaching the Upload Page
+## 4. Cookie Manipulation and IDOR: Reaching the Upload Page
 
 ### Identifying the cookies
 
@@ -125,7 +125,7 @@ After logging in as admin, open Firefox Developer Tools (`F12`) and go to **Stor
 | `user` | `34322` |
 | `role` | `admin` |
 
-The `user` cookie holds the account's **Access ID**, and the `role` cookie holds the privilege level. These are not signed or protected — they can be edited directly in the browser.
+The `user` cookie holds the account's **Access ID**, and the `role` cookie holds the privilege level. These are not signed or protected: they can be edited directly in the browser.
 
 ### Logging in as Guest first (alternative starting point)
 
@@ -194,7 +194,7 @@ Reload the page. The **Uploads** menu item now works without the "super admin re
 
 ---
 
-## 5. File Upload Exploitation — PHP Reverse Shell
+## 5. File Upload Exploitation: PHP Reverse Shell
 
 ### Preparing the shell
 
@@ -219,7 +219,7 @@ With the super admin cookies set, navigate to the **Uploads** page at:
 http://10.10.10.28/cdn-cgi/login/admin.php?content=upload
 ```
 
-Browse to `shell.php` and click Upload. The application accepts the file without any content-type or extension filtering — no bypass is required.
+Browse to `shell.php` and click Upload. The application accepts the file without any content-type or extension filtering: no bypass is required.
 
 The upload success message confirms the file was stored. Uploaded files land in the `/uploads/` directory discovered earlier.
 
@@ -279,7 +279,7 @@ uid=33(www-data) gid=33(www-data) groups=33(www-data)
 
 ---
 
-## 7. Lateral Movement — Finding robert's Credentials
+## 7. Lateral Movement: Finding robert's Credentials
 
 ### Locating db.php
 
@@ -316,7 +316,7 @@ robert@oopsie:/$ id
 uid=1000(robert) gid=1000(robert) groups=1000(robert),1001(bugtracker)
 ```
 
-Robert belongs to the `bugtracker` group — this is significant for the next step.
+Robert belongs to the `bugtracker` group: this is significant for the next step.
 
 ---
 
@@ -345,7 +345,7 @@ ssh robert@10.10.10.28
 
 ---
 
-## 10. Privilege Escalation — SUID Binary and PATH Hijack
+## 10. Privilege Escalation: SUID Binary and PATH Hijack
 
 ### Finding the SUID binary
 
@@ -371,7 +371,7 @@ ls -la /usr/bin/bugtracker
 -rwsr-xr-- 1 root bugtracker 8792 Jan 25 10:14 /usr/bin/bugtracker
 ```
 
-The `s` in the owner execute position is the SUID bit. When `bugtracker` runs, it runs as **root** regardless of who invokes it. The file is executable by anyone in the `bugtracker` group — which includes `robert`.
+The `s` in the owner execute position is the SUID bit. When `bugtracker` runs, it runs as **root** regardless of who invokes it. The file is executable by anyone in the `bugtracker` group: which includes `robert`.
 
 ### Analysing the binary
 
@@ -396,7 +396,7 @@ The binary:
 2. Prompts for a Bug ID
 3. Calls `cat /root/reports/<BugID>` to display the report
 
-**Critical detail:** it calls `cat` using a **relative path**, not `/bin/cat`. This means it searches the directories listed in `$PATH` in order to find `cat` — and that list is under our control.
+**Critical detail:** it calls `cat` using a **relative path**, not `/bin/cat`. This means it searches the directories listed in `$PATH` in order to find `cat`: and that list is under our control.
 
 ### PATH hijack exploit
 
@@ -438,7 +438,7 @@ Provide Bug ID: 1
 ---------------
 ```
 
-After entering `1` (any input will do), instead of running `/bin/cat`, the binary executes `/tmp/cat` — which is our `/bin/sh` — **as root** (because of the SUID bit).
+After entering `1` (any input will do), instead of running `/bin/cat`, the binary executes `/tmp/cat`: which is our `/bin/sh`: **as root** (because of the SUID bit).
 
 ```
 # id
@@ -463,7 +463,7 @@ Path: `/root/root.txt`
 
 ---
 
-## 12. Post-Exploitation — Credentials for Vaccine
+## 12. Post-Exploitation: Credentials for Vaccine
 
 While in the root shell, check root's hidden configuration directory:
 
@@ -557,6 +557,6 @@ nmap scan
 - **Information disclosure in page source** is a low-hanging fruit that is often overlooked. A script tag reference to `/cdn-cgi/login/script.js` gave away the entire admin panel location.
 - **Client-side cookies are not access controls.** The application trusted the `role` and `user` cookies without any server-side validation. Changing them in DevTools was sufficient to escalate from guest to super admin.
 - **IDOR via URL parameter** allowed full account enumeration. The `id` parameter on the accounts page iterated through every user record with no authentication check beyond the cookie.
-- **No file upload filter** was present — the PHP shell uploaded without any bypass needed. Even a basic extension or MIME-type check would have blocked this.
+- **No file upload filter** was present: the PHP shell uploaded without any bypass needed. Even a basic extension or MIME-type check would have blocked this.
 - **Credentials reuse in PHP config files** is extremely common. `db.php` credentials were reused as OS-level credentials for `robert`.
 - **Relative paths in SUID binaries** are a classic privilege escalation pattern. Any SUID binary that calls another program without an absolute path is vulnerable to PATH hijacking.

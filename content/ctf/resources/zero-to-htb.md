@@ -2,21 +2,21 @@
 title = "Zero to HTB: My Lab, Tools, and Workflow"
 date = "2026-05-05T00:00:00-05:00"
 tags = ["htb", "setup", "methodology", "kali", "terminator", "cherrytree", "workflow", "bash", "tools"]
-description = "A complete walkthrough of my HTB environment — Kali setup, Terminator config, a .bashrc notes system that puts your cheatsheets in the terminal, CherryTree note-taking workflow, and the methodology I use to approach every box."
+description = "A complete walkthrough of my HTB environment: Kali setup, Terminator config, a .bashrc notes system that puts your cheatsheets in the terminal, CherryTree note-taking workflow, and the methodology I use to approach every box."
 draft = false
 +++
 
-This is not a tools list. You can find those anywhere. This is the actual setup — the specific config values, the exact keybindings, the small decisions that compound into a workflow that gets out of your way and lets you focus on the box. Start to finish.
+This is not a tools list. You can find those anywhere. This is the actual setup: the specific config values, the exact keybindings, the small decisions that compound into a workflow that gets out of your way and lets you focus on the box. Start to finish.
 
 ---
 
-## PT 1 — The Environment
+## PT 1: The Environment
 
 ### Kali Linux
 
 Kali is the obvious choice and the right one. The tooling is pre-installed, the community uses it, and writeups are written against it. Running it as a VM on your host gives you snapshots, easy networking config, and the ability to reset if something goes sideways.
 
-I run Kali in QEMU/KVM with virt-manager. VMware and VirtualBox both work fine — the preference is personal. The important things are:
+I run Kali in QEMU/KVM with virt-manager. VMware and VirtualBox both work fine: the preference is personal. The important things are:
 
 - **Minimum 4 cores, 8GB RAM.** BloodHound with a full domain dump and a couple of browser tabs will eat a weaker setup.
 - **Give it a real disk allocation, not dynamic.** Dynamic disks fragment badly under heavy I/O. 80GB fixed is a reasonable starting point.
@@ -36,7 +36,7 @@ Verify you're connected:
 ip a show tun0
 ```
 
-Your `tun0` address is your attacker IP — the one you put in every reverse shell. Export it immediately:
+Your `tun0` address is your attacker IP: the one you put in every reverse shell. Export it immediately:
 
 ```bash
 export ATTACKER=$(ip a show tun0 | grep 'inet ' | awk '{print $2}' | cut -d/ -f1)
@@ -59,7 +59,7 @@ Every machine gets its own directory. Keep it consistent:
 │       └── notes.ctb
 ```
 
-Create it with one alias — also in `.bashrc`:
+Create it with one alias: also in `.bashrc`:
 
 ```bash
 newbox() {
@@ -73,7 +73,7 @@ Run `newbox shocker`, `cd ~/htb/machines/shocker`, and you're set.
 
 ---
 
-## PT 2 — Terminator
+## PT 2: Terminator
 
 Terminator is the terminal. Not because it's the flashiest option, but because split panes and keyboard-only navigation are non-negotiable for this work, and Terminator does both without requiring a tiling window manager config.
 
@@ -129,11 +129,11 @@ Terminator's config file lives at `~/.config/terminator/config`. Replace the def
 
 What this gives you:
 
-- **`#0d0d0d` background** — not pure black, which causes eye strain over long sessions. Just dark enough.
-- **`#00ff41` cursor** — the classic matrix green. Trivial choice, but a bright cursor prevents losing your place mid-scroll.
-- **10,000 line scrollback** — nmap full port scans and verbose tool output are long. You will want to scroll up.
-- **No titlebar** — recovers vertical space. The pane borders make the layout clear enough.
-- **Hack Nerd Font** — required for tool output that uses special characters (ligature support, box-drawing characters in tools like pwncat). Install with `sudo apt install fonts-hack`.
+- **`#0d0d0d` background**: not pure black, which causes eye strain over long sessions. Just dark enough.
+- **`#00ff41` cursor**: the classic matrix green. Trivial choice, but a bright cursor prevents losing your place mid-scroll.
+- **10,000 line scrollback**: nmap full port scans and verbose tool output are long. You will want to scroll up.
+- **No titlebar**: recovers vertical space. The pane borders make the layout clear enough.
+- **Hack Nerd Font**: required for tool output that uses special characters (ligature support, box-drawing characters in tools like pwncat). Install with `sudo apt install fonts-hack`.
 
 ### The Split Pane Workflow
 
@@ -168,9 +168,9 @@ Open Terminator, then:
 
 ---
 
-## PT 3 — .bashrc
+## PT 3: .bashrc
 
-The `.bashrc` is where the workflow lives. Not just aliases — functions that put your reference material directly in the terminal. No switching windows, no Googling syntax mid-engagement.
+The `.bashrc` is where the workflow lives. Not just aliases: functions that put your reference material directly in the terminal. No switching windows, no Googling syntax mid-engagement.
 
 Open `~/.bashrc` and add the following blocks.
 
@@ -209,12 +209,12 @@ Install `bat`:
 
 ```bash
 sudo apt install bat -y
-# Kali aliases bat as batcat — fix it:
+# Kali aliases bat as batcat: fix it:
 mkdir -p ~/.local/bin
 ln -s /usr/bin/batcat ~/.local/bin/bat
 ```
 
-Now `notes ad` prints your entire Active Directory cheatsheet with markdown syntax highlighting, right in the terminal. `notes privesc` pulls up your Linux privesc reference. No tab switching. No browser. The shorthand keywords are intentionally brief — `notes xfer` is faster to type under pressure than `notes file-transfers`.
+Now `notes ad` prints your entire Active Directory cheatsheet with markdown syntax highlighting, right in the terminal. `notes privesc` pulls up your Linux privesc reference. No tab switching. No browser. The shorthand keywords are intentionally brief: `notes xfer` is faster to type under pressure than `notes file-transfers`.
 
 Keep your notes in `~/notes/` as plain markdown files. The ones on this blog live there too.
 
@@ -301,7 +301,7 @@ alias l4444='rlwrap nc -lvnp 4444'
 alias l80='rlwrap nc -lvnp 80'
 ```
 
-`rlwrap` wraps the netcat listener with readline support — arrow keys, history, tab completion inside the reverse shell. Without it, up arrow prints `^[[A` into the shell. Install with `sudo apt install rlwrap -y`.
+`rlwrap` wraps the netcat listener with readline support: arrow keys, history, tab completion inside the reverse shell. Without it, up arrow prints `^[[A` into the shell. Install with `sudo apt install rlwrap -y`.
 
 ### Box Setup
 
@@ -326,13 +326,13 @@ source ~/.bashrc
 
 ---
 
-## PT 4 — CherryTree
+## PT 4: CherryTree
 
 CherryTree is the notes application. Not Obsidian, not Notion, not a text file. CherryTree. The reasons:
 
 - Works completely offline
 - Rich text and code nodes in the same tree
-- One `.ctb` file per machine — self-contained and portable
+- One `.ctb` file per machine: self-contained and portable
 - Keyboard-driven enough to stay out of the way
 
 ```bash
@@ -361,13 +361,13 @@ Create the top-level node with the machine name. Everything below it is a child 
 
 ### Always Paste as Plain Text
 
-This is the single most important CherryTree habit. Copying from a browser, a PDF, or another document brings formatting — fonts, colors, sizes — that pollute your notes and make them inconsistent.
+This is the single most important CherryTree habit. Copying from a browser, a PDF, or another document brings formatting: fonts, colors, sizes: that pollute your notes and make them inconsistent.
 
 **Never use `Ctrl+V`.**
 
 **Always use `Ctrl+Shift+V`** to paste as plain text. Every time, without exception. Make it muscle memory before anything else in this section.
 
-### Code Nodes — Black Background
+### Code Nodes: Black Background
 
 For anything that is terminal output, command sequences, or code: right-click the parent node → **Add Child Node** → set the node type to **Code** and choose the appropriate syntax (bash, python, plain text). Code nodes render in monospace with a dark background automatically.
 
@@ -380,9 +380,9 @@ For inline command sections inside a rich text node:
 
 This makes command blocks visually distinct from prose without needing a dedicated code node for every snippet.
 
-### Highlighting — Red for Credentials and Flags
+### Highlighting: Red for Credentials and Flags
 
-Credentials and flags get highlighted red. This is not decorative — when you are scrolling through three pages of notes looking for a password you found two hours ago, red text stops your eye immediately.
+Credentials and flags get highlighted red. This is not decorative: when you are scrolling through three pages of notes looking for a password you found two hours ago, red text stops your eye immediately.
 
 1. Select the text (a hash, a password, a flag value)
 2. `Ctrl+H` → Highlight Color → choose red (`#ff0000` or a slightly softer `#cc0000`)
@@ -451,14 +451,14 @@ Create this structure once, then **File → Import** it as a template for every 
 │           (highlight red)
 │
 └── 📄 Rabbit Holes
-        [dead ends, wrong paths, time spent — useful for writeups]
+        [dead ends, wrong paths, time spent: useful for writeups]
 ```
 
 The Rabbit Holes node is worth keeping. When you write the post-box writeup, the dead ends are part of the story and show your actual thought process. Most writeups skip them. The good ones do not.
 
 ---
 
-## PT 5 — Tools by Phase
+## PT 5: Tools by Phase
 
 No tool does everything. This is what I reach for at each phase and why.
 
@@ -485,7 +485,7 @@ rustscan -a $TARGET -- -sC -sV -oN nmap/full.nmap
 
 | Tool | Use |
 |------|-----|
-| `burpsuite` | Intercept, modify, replay — the irreplaceable core |
+| `burpsuite` | Intercept, modify, replay: the irreplaceable core |
 | `ffuf` | Vhost, subdomain, parameter fuzzing |
 | `gobuster` | Directory and file fuzzing |
 | `whatweb` | Technology fingerprinting |
@@ -501,26 +501,26 @@ Wordlists: SecLists is the standard. `/usr/share/seclists/` on Kali. If it is no
 | `metasploit` | Known CVEs, staged payloads, post-exploitation modules |
 | `searchsploit` | Offline ExploitDB search |
 | `msfvenom` | Payload generation (shells, DLLs, MSI files) |
-| `impacket` | The AD exploitation suite — psexec, wmiexec, secretsdump, GetNPUsers |
+| `impacket` | The AD exploitation suite: psexec, wmiexec, secretsdump, GetNPUsers |
 | `evil-winrm` | WinRM shell with pass-the-hash support |
 
 ### Post-Exploitation
 
 | Tool | Use |
 |------|-----|
-| `linpeas` / `winpeas` | Automated privesc enumeration — run early |
+| `linpeas` / `winpeas` | Automated privesc enumeration: run early |
 | `bloodhound` | AD attack path visualization |
 | `sharphound` | BloodHound data collection (run on the Windows target) |
 | `mimikatz` | Credential dumping, pass-the-hash, Kerberos ticket abuse |
 | `powerview` | PowerShell AD enumeration and exploitation |
 | `chisel` | TCP tunneling for pivoting through restricted networks |
-| `ligolo-ng` | Creates a real tun interface — cleaner than proxychains |
+| `ligolo-ng` | Creates a real tun interface: cleaner than proxychains |
 
 ### Password Cracking
 
 | Tool | Use |
 |------|-----|
-| `hashcat` | GPU-accelerated cracking — use whenever you have a GPU |
+| `hashcat` | GPU-accelerated cracking: use whenever you have a GPU |
 | `john` | CPU cracking, excellent for file formats (zip, pdf, ssh keys) |
 | `hydra` | Network service brute force (SSH, FTP, HTTP forms) |
 | `cewl` | Generate wordlists from target websites |
@@ -529,7 +529,7 @@ Always try `rockyou.txt` first. Then `rockyou.txt` with `best64.rule`. Then cust
 
 ---
 
-## PT 6 — The Methodology
+## PT 6: The Methodology
 
 ### Step 1: Enumerate Before Everything
 
@@ -538,10 +538,10 @@ Resist the urge to go straight to exploitation. Every box that I have gotten stu
 The order:
 
 ```bash
-# 1. Quick scan — what is open
+# 1. Quick scan: what is open
 quickscan
 
-# 2. Full port scan in the background — catch non-standard ports  
+# 2. Full port scan in the background: catch non-standard ports  
 fullscan &
 
 # 3. Work the quick results while the full scan runs
@@ -584,7 +584,7 @@ stty raw -echo; fg
 export TERM=xterm
 ```
 
-**Windows:** Upgrade to a proper session — evil-winrm if WinRM is available, psexec if you have admin credentials. A plain netcat session on Windows is difficult to work with.
+**Windows:** Upgrade to a proper session: evil-winrm if WinRM is available, psexec if you have admin credentials. A plain netcat session on Windows is difficult to work with.
 
 ### Step 5: Enumerate Again From the New Context
 
@@ -594,7 +594,7 @@ The methodology is recursive. Enumerate → foothold → enumerate → escalate 
 
 ### Step 6: Document As You Go
 
-Do not wait until the box is finished to write anything down. Document each step immediately — the command, the output, the reasoning. Writeups written from memory after the fact are always worse than notes taken in the moment.
+Do not wait until the box is finished to write anything down. Document each step immediately: the command, the output, the reasoning. Writeups written from memory after the fact are always worse than notes taken in the moment.
 
 The Loot node gets updated every time you find a credential or a flag. Highlighted red. Always.
 
@@ -603,7 +603,7 @@ The Loot node gets updated every time you find a credential or a flag. Highlight
 ## The Setup Checklist
 
 ```
-[ ] Kali VM — 4+ cores, 8GB RAM, 80GB fixed disk
+[ ] Kali VM: 4+ cores, 8GB RAM, 80GB fixed disk
 [ ] Terminator installed and configured (~/.config/terminator/config)
 [ ] Hack Nerd Font installed
 [ ] ~/.bashrc updated and sourced

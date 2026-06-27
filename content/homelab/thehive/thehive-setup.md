@@ -2,11 +2,11 @@
 title = "Setting Up TheHive for SOC Case Management"
 date = "2026-06-25T14:00:00-05:00"
 tags = ["thehive", "homelab", "case-management", "elasticsearch", "docker", "ubuntu", "soc"]
-description = "Installing TheHive 3 on a System76 Lemur Pro — battling hardware quirks, a dead apt repository, and config format mismatches to get a working case management platform."
+description = "Installing TheHive 3 on a System76 Lemur Pro: battling hardware quirks, a dead apt repository, and config format mismatches to get a working case management platform."
 draft = false
 +++
 
-Wazuh generates alerts. TheHive turns them into cases — trackable, assignable,
+Wazuh generates alerts. TheHive turns them into cases: trackable, assignable,
 closeable. Without case management, a SIEM is just a wall of text nobody acts on.
 
 This post covers deploying TheHive on a System76 Lemur Pro running Ubuntu
@@ -16,8 +16,8 @@ here.
 
 ## Hardware
 
-The System76 Lemur Pro (lemu8) is a thin ultrabook — 8GB RAM, no dedicated
-GPU — running Ubuntu Server 26.04 minimal over WiFi.
+The System76 Lemur Pro (lemu8) is a thin ultrabook: 8GB RAM, no dedicated
+GPU: running Ubuntu Server 26.04 minimal over WiFi.
 
 Hostname: `thehive`. Static IP: `10.0.42.139`.
 
@@ -31,7 +31,7 @@ The machine was shutting down randomly with no load, no thermal event, and
 nothing in the logs. This reproduced across multiple OS installs.
 
 Root cause: the lid switch hardware is flaky. The kernel was reading spurious
-closure events and triggering suspend — with the lid fully open.
+closure events and triggering suspend: with the lid fully open.
 
 ```bash
 sudo nano /etc/systemd/logind.conf
@@ -81,8 +81,8 @@ sudo systemctl enable --now wifi-powersave-off
 
 TheHive 3 requires:
 
-- **Elasticsearch 7.x** — all TheHive data lives here
-- **Docker** — TheHive runs containerized
+- **Elasticsearch 7.x**: all TheHive data lives here
+- **Docker**: TheHive runs containerized
 
 Cassandra is a TheHive 4+ requirement. TheHive 3 doesn't use it. It's
 installed here as a future upgrade path but plays no role in the current setup.
@@ -90,11 +90,11 @@ installed here as a future upgrade path but plays no role in the current setup.
 ## Java: Version Conflicts
 
 Ubuntu 26.04 defaults to Java 21. TheHive's Docker container is fine with
-that. Cassandra 4.1.x is not — two JVM flags it depends on were removed in
+that. Cassandra 4.1.x is not: two JVM flags it depends on were removed in
 newer versions:
 
-- `UseBiasedLocking` — removed in Java 17
-- `UseConcMarkSweepGC` — removed in Java 15
+- `UseBiasedLocking`: removed in Java 17
+- `UseConcMarkSweepGC`: removed in Java 15
 
 Only Java 11 works with Cassandra 4.1.x.
 
@@ -102,8 +102,8 @@ Only Java 11 works with Cassandra 4.1.x.
 sudo apt-get install -y openjdk-21-jre-headless openjdk-11-jdk
 ```
 
-Force Cassandra to use Java 11 in two places — the startup script and the
-systemd unit — because one without the other doesn't hold:
+Force Cassandra to use Java 11 in two places: the startup script and the
+systemd unit: because one without the other doesn't hold:
 
 ```bash
 # Add at line 1 of /etc/cassandra/cassandra-env.sh:
@@ -122,7 +122,7 @@ Environment="JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64"
 ```bash
 sudo systemctl daemon-reload && sudo systemctl enable --now cassandra
 nodetool status
-# UN  127.0.0.1  — Up/Normal
+# UN  127.0.0.1 : Up/Normal
 ```
 
 ## Elasticsearch
@@ -230,7 +230,7 @@ application.baseUrl = "http://10.0.42.139:9000"
 
 **This is TheHive 3 format.** TheHive 4 and 5 use `db.janusgraph { ... }`.
 Using the wrong format generates cryptic HOCON parse errors about unbalanced
-braces — the parser won't tell you the version is the problem.
+braces: the parser won't tell you the version is the problem.
 
 Run with host networking so the container can reach Elasticsearch on the
 host's loopback:
@@ -257,4 +257,4 @@ Access at `http://10.0.42.139:9000`. Default credentials: `admin` / `secret`.
 Change the password on first login.
 
 TheHive is running. The next step is connecting it to Wazuh so every alert
-automatically becomes a case — covered in the next post.
+automatically becomes a case: covered in the next post.

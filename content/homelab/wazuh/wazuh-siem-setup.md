@@ -6,7 +6,7 @@ description = "Installing Wazuh all-in-one on a Debian server, registering agent
 draft = false
 +++
 
-Every SOC runs a SIEM. For this lab, that's Wazuh — an open source platform
+Every SOC runs a SIEM. For this lab, that's Wazuh: an open source platform
 that handles log collection, threat detection, and alerting across every
 machine on the network. This post covers the full install on a dedicated Debian
 server, connecting agents on Arch Linux and Windows Server, and every
@@ -14,7 +14,7 @@ problem that came up in between.
 
 ## Hardware
 
-The SIEM server is a repurposed machine running Debian stable — 16GB RAM,
+The SIEM server is a repurposed machine running Debian stable: 16GB RAM,
 500GB NVMe, living on the LAN at `10.0.42.114` with no GUI. Just SSH and a
 display attached for local access when needed.
 
@@ -57,7 +57,7 @@ The dashboard should be reachable at `https://10.0.42.114`.
 
 ![Fresh Wazuh dashboard after install](/images/FreshWazuhLogin.png)
 
-## Issue: Dashboard Stuck — ECONNREFUSED
+## Issue: Dashboard Stuck: ECONNREFUSED
 
 After install the dashboard stayed on "not ready yet" for 10+ minutes.
 The logs explained why:
@@ -67,18 +67,18 @@ The logs explained why:
 ```
 
 The dashboard was trying to reach the OpenSearch indexer on IPv6 loopback
-(`::1`). The indexer wasn't listening there — it was bound to the LAN IP.
+(`::1`). The indexer wasn't listening there: it was bound to the LAN IP.
 
 Fix in `/etc/wazuh-dashboard/opensearch_dashboards.yml`:
 
 ```yaml
-# Wrong — resolves to ::1 on this system
+# Wrong: resolves to ::1 on this system
 opensearch.hosts: ["https://localhost:9200"]
 
-# Also wrong — indexer isn't on loopback in an all-in-one install
+# Also wrong: indexer isn't on loopback in an all-in-one install
 opensearch.hosts: ["https://127.0.0.1:9200"]
 
-# Correct — indexer binds to the LAN interface
+# Correct: indexer binds to the LAN interface
 opensearch.hosts: ["https://10.0.42.114:9200"]
 ```
 
@@ -95,7 +95,7 @@ sudo systemctl restart wazuh-dashboard
 ## Issue: OpenSearch Causing Constant Fan Spin
 
 With the dashboard up, the server fans were spinning continuously under no
-meaningful load. The culprit was the default JVM heap size for the indexer —
+meaningful load. The culprit was the default JVM heap size for the indexer -
 1024MB. A heap that small causes constant garbage collection cycles, which
 reads as sustained CPU usage.
 
@@ -111,10 +111,10 @@ sudo systemctl restart wazuh-indexer
 ```
 
 Fans dropped back to idle within a minute. 2GB is a good balance for a
-small lab — enough headroom to avoid GC thrash, not so much it starves
+small lab: enough headroom to avoid GC thrash, not so much it starves
 everything else on a 16GB machine.
 
-## Registering the First Agent — Arch Linux Workstation
+## Registering the First Agent: Arch Linux Workstation
 
 Wazuh has no official Arch Linux package. The AUR covers it:
 
@@ -148,7 +148,7 @@ Wazuh requires agent version ≤ manager version, so registration failed:
 ERROR: Agent version must be lower or equal to manager version
 ```
 
-The fix is to upgrade the manager immediately after every fresh install —
+The fix is to upgrade the manager immediately after every fresh install -
 the installer packages lag behind the AUR:
 
 ```bash
@@ -167,7 +167,7 @@ dashboard.
 While setting up monitoring for the SIEM server itself, there was a temptation to
 install `wazuh-agent` on the same machine as the manager. Don't.
 
-The `wazuh-manager` and `wazuh-agent` packages conflict — installing one
+The `wazuh-manager` and `wazuh-agent` packages conflict: installing one
 removes the other. The manager already monitors itself via a built-in local
 agent (ID 000). No separate agent package is needed or wanted on the manager.
 
@@ -181,7 +181,7 @@ sudo bash wazuh-install.sh -a --overwrite
 
 Then upgrade again immediately after. Lesson logged.
 
-## Registering the Second Agent — Windows Server 2022 (DC01)
+## Registering the Second Agent: Windows Server 2022 (DC01)
 
 DC01 is a Windows Server 2022 VM running Active Directory on the lab network
 (`192.168.122.10`). Install the Wazuh agent via PowerShell as Administrator:
@@ -201,7 +201,7 @@ Set-Service -Name WazuhSvc -StartupType Automatic
 
 Both agents confirmed active in the dashboard.
 
-![Both agents — Arch and DC01 — connected](/images/wazuh-agents-arch_DC.png)
+![Both agents: Arch and DC01: connected](/images/wazuh-agents-arch_DC.png)
 
 ## Where Things Stand
 
@@ -214,5 +214,5 @@ Three endpoints reporting into Wazuh:
 | SIEM Server | Debian (local agent 000) | Wazuh manager itself |
 
 The SIEM is collecting logs, running rules, and generating alerts. Next step:
-a case management platform to track what needs action — that's TheHive, covered
+a case management platform to track what needs action: that's TheHive, covered
 in the next post.

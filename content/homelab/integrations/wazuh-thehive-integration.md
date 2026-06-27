@@ -7,7 +7,7 @@ draft = false
 +++
 
 With Wazuh generating alerts and TheHive ready to manage cases, the missing
-piece is the connection between them. This post covers building that bridge —
+piece is the connection between them. This post covers building that bridge -
 a Python integration script that runs on the Wazuh manager and pushes alerts
 into TheHive as cases the moment they fire.
 
@@ -21,13 +21,13 @@ when an alert matches the configured filter. Wazuh passes three arguments:
 2. API key (from `ossec.conf`)
 3. Hook URL (from `ossec.conf`)
 
-The script handles the rest. No daemon, no service — just a script that runs
+The script handles the rest. No daemon, no service: just a script that runs
 per alert.
 
 ## TheHive API Key
 
 In TheHive, go to **Admin → Users**, select the admin account, and generate
-an API key. Copy it — this goes into the Wazuh config.
+an API key. Copy it: this goes into the Wazuh config.
 
 ## The Integration Script
 
@@ -65,9 +65,9 @@ def main():
     elif level >= 7:
         severity = 2
 
-    title = f"[Wazuh] {rule.get('description', 'Alert')} — {agent.get('name', 'unknown')}"
+    title = f"[Wazuh] {rule.get('description', 'Alert')}: {agent.get('name', 'unknown')}"
     description = (
-        f"**Rule:** {rule.get('id')} — {rule.get('description')}\n"
+        f"**Rule:** {rule.get('id')}: {rule.get('description')}\n"
         f"**Level:** {level}\n"
         f"**Agent:** {agent.get('name')} ({agent.get('ip', 'N/A')})\n"
         f"**Time:** {alert.get('timestamp', datetime.utcnow().isoformat())}\n\n"
@@ -99,7 +99,7 @@ if __name__ == "__main__":
     main()
 ```
 
-Set permissions — Wazuh runs integrations as the `wazuh` user:
+Set permissions: Wazuh runs integrations as the `wazuh` user:
 
 ```bash
 sudo chmod 755 /var/ossec/integrations/custom-thehive
@@ -112,11 +112,11 @@ The script maps Wazuh's 0–15 rule levels to TheHive's 1–3 severity scale:
 
 | Wazuh Level | TheHive Severity |
 |---|---|
-| 3–6 | 1 — Low |
-| 7–9 | 2 — Medium |
-| 10–15 | 3 — High |
+| 3–6 | 1: Low |
+| 7–9 | 2: Medium |
+| 10–15 | 3: High |
 
-Levels 0–2 are skipped entirely — those are informational Wazuh events, not
+Levels 0–2 are skipped entirely: those are informational Wazuh events, not
 actionable alerts.
 
 ## Configuring Wazuh to Call the Script
@@ -146,7 +146,7 @@ sudo systemctl restart wazuh-manager
 
 ## Result
 
-Six cases appeared in TheHive immediately after the restart — Wazuh
+Six cases appeared in TheHive immediately after the restart: Wazuh
 backfilling queued alerts from agents that had already been generating events.
 No manual trigger required.
 
@@ -168,5 +168,5 @@ and level. Cases can be assigned, worked, and closed with a documented
 timeline.
 
 That's a functional SOC workflow running on commodity hardware. Next up:
-generating real detections — Atomic Red Team simulations against the Active
+generating real detections: Atomic Red Team simulations against the Active
 Directory lab.

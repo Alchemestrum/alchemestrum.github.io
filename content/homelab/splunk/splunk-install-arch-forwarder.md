@@ -7,14 +7,14 @@ draft = false
 +++
 
 The lab already has Wazuh running as the primary SIEM. Splunk is the industry
-standard — most enterprise SOC job postings list it as a requirement. The goal
+standard: most enterprise SOC job postings list it as a requirement. The goal
 here is to run both on the same hardware, switching between them as needed, and
 use Splunk for Boss of the SOC investigations and SPL practice.
 
 ## Hardware
 
-- **SIEM Server** (Debian, `10.0.42.114`) — Splunk Enterprise server
-- **Arch Linux Workstation** — Splunk Universal Forwarder, daily driver
+- **SIEM Server** (Debian, `10.0.42.114`): Splunk Enterprise server
+- **Arch Linux Workstation**: Splunk Universal Forwarder, daily driver
 
 ## Disabling Wazuh
 
@@ -42,7 +42,7 @@ install it:
 sudo dpkg -i splunk-10.4.0-f798d4d49089-linux-amd64.deb
 ```
 
-A `find` warning about a missing Python path appears during install — harmless,
+A `find` warning about a missing Python path appears during install: harmless,
 the install completes successfully.
 
 ### Issue: Running as Root Deprecated
@@ -75,7 +75,7 @@ connections on port 9997:
 sudo -u splunk /opt/splunk/bin/splunk enable listen 9997 -auth admin:PASSWORD
 ```
 
-An SSL hostname validation warning appears — not relevant in a private lab
+An SSL hostname validation warning appears: not relevant in a private lab
 network. The receiver opens on TCP 9997.
 
 ## Installing the Universal Forwarder on Arch Linux
@@ -88,7 +88,7 @@ yay -S splunkforwarder
 ```
 
 The AUR package is version 10.2.3 against Splunk 10.4.0 on the server.
-Splunk supports forwarders up to two major versions behind the indexer —
+Splunk supports forwarders up to two major versions behind the indexer -
 no compatibility issue.
 
 Point the forwarder at the Splunk server:
@@ -100,7 +100,7 @@ sudo /opt/splunkforwarder/bin/splunk add forward-server 10.0.42.114:9997 -auth a
 
 ## Getting Logs into Splunk
 
-### First Test — pacman.log
+### First Test: pacman.log
 
 The quickest way to verify the forwarder connection is monitoring a log file
 that already exists. On Arch, `/var/log/pacman.log` goes back to the initial
@@ -110,14 +110,14 @@ install:
 sudo /opt/splunkforwarder/bin/splunk add monitor /var/log/pacman.log -auth admin:PASSWORD
 ```
 
-8,689 events appeared in Splunk immediately — every package install, upgrade,
+8,689 events appeared in Splunk immediately: every package install, upgrade,
 and removal since day one. Connection confirmed.
 
-### The Real Goal — System and Auth Logs
+### The Real Goal: System and Auth Logs
 
 Arch Linux uses systemd journal for logging rather than traditional syslog
 files. Splunk can't read binary journal files directly. The solution is
-`syslog-ng` as a bridge — it reads from journald and writes to a plain text
+`syslog-ng` as a bridge: it reads from journald and writes to a plain text
 file that the forwarder monitors.
 
 ```bash
@@ -129,7 +129,7 @@ sudo pacman -S syslog-ng
 The syslog-ng systemd unit on Arch is a template service, not a standard one:
 
 ```bash
-# Wrong — unit doesn't exist
+# Wrong: unit doesn't exist
 sudo systemctl enable --now syslog-ng
 
 # Correct
@@ -141,7 +141,7 @@ sudo systemctl enable --now syslog-ng@default
 The plan was to drop a config file into `/etc/syslog-ng/conf.d/` to add a
 journald source and file destination. syslog-ng started fine but the file
 never appeared. The root cause: the default `syslog-ng.conf` on Arch only
-includes `scl.conf` — conf.d is not wired up.
+includes `scl.conf`: conf.d is not wired up.
 
 ```bash
 grep "@include" /etc/syslog-ng/syslog-ng.conf
@@ -154,7 +154,7 @@ Adding a conf.d include fixed the loading:
 sudo sed -i '/@include "scl.conf"/a @include "/etc/syslog-ng/conf.d/*.conf"' /etc/syslog-ng/syslog-ng.conf
 ```
 
-But the conf.d file defined a new `systemd-journal()` source — and the
+But the conf.d file defined a new `systemd-journal()` source: and the
 default config already has one. Running two journal sources with the same
 namespace crashes syslog-ng:
 
@@ -162,7 +162,7 @@ namespace crashes syslog-ng:
 > The configuration must not contain more than one systemd-journal() source
 > with the same namespace() option
 
-#### Fix — Use the Existing Source
+#### Fix: Use the Existing Source
 
 The default config already defines `s_local` which reads from journald.
 The only thing needed is a new destination and log path that pipes `s_local`
@@ -182,7 +182,7 @@ sudo chmod 644 /var/log/syslog
 
 #### Issue: File Permissions
 
-`/var/log/syslog` was created by syslog-ng with restricted permissions —
+`/var/log/syslog` was created by syslog-ng with restricted permissions -
 readable only by root. The forwarder runs as the `splunk` user and couldn't
 read it. `chmod 644` resolved it.
 
@@ -198,7 +198,7 @@ Events started flowing immediately. Searching in Splunk:
 index=main source="/var/log/syslog"
 ```
 
-Real-time system events, auth logs, sudo activity, SSH sessions — all
+Real-time system events, auth logs, sudo activity, SSH sessions: all
 searchable in Splunk.
 
 ## Result

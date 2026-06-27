@@ -2,7 +2,7 @@
 title = "Hello World"
 date = "2026-03-06T12:34:04-05:00"
 tags = ["meta"]
-description = "First post — what this blog is."
+description = "First post: what this blog is."
 draft = false
 +++
 

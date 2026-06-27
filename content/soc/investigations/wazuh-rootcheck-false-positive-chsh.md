@@ -2,7 +2,7 @@
 title = "Investigating a Wazuh Rootcheck Alert: Trojaned chsh Binary"
 date = "2026-06-25T20:00:00-05:00"
 tags = ["wazuh", "soc", "false-positive", "rootcheck", "debian", "incident-response"]
-description = "First alert from my Wazuh homelab — rootcheck flagged /usr/bin/chsh as a trojaned binary on a fresh Debian install. Walking through the investigation and resolution."
+description = "First alert from my Wazuh homelab: rootcheck flagged /usr/bin/chsh as a trojaned binary on a fresh Debian install. Walking through the investigation and resolution."
 draft = false
 +++
 
@@ -19,14 +19,14 @@ Rootcheck is Wazuh's host-based anomaly detection engine. One of the things it
 does is compare common system binaries against a database of known-good and
 known-bad file signatures, flagging anything that looks tampered with.
 
-A trojaned binary alert is serious — if real, it means an attacker has replaced
+A trojaned binary alert is serious: if real, it means an attacker has replaced
 a legitimate system binary with a malicious one that runs attacker code while
 appearing to function normally. `chsh` (change shell) is a common target because
 it runs as setuid root.
 
 ## Investigation
 
-**Step 1 — Identify the owning package**
+**Step 1: Identify the owning package**
 
 The first question: does the OS even claim to own this file?
 
@@ -40,9 +40,9 @@ passwd: /usr/bin/chsh
 ```
 
 `/usr/bin/chsh` is owned by the `passwd` package. Not installed manually, not
-dropped by something unknown — a legitimate Debian package owns it.
+dropped by something unknown: a legitimate Debian package owns it.
 
-**Step 2 — Verify package integrity**
+**Step 2: Verify package integrity**
 
 Knowing a package *claims* ownership isn't enough. The file itself could still
 be modified. `dpkg -V` checks each file in a package against its stored checksum:
@@ -69,10 +69,10 @@ the compiled binaries differ enough from what Wazuh expects that legitimate
 system files trigger the trojaned binary check.
 
 This is a known limitation of rootcheck on non-RHEL systems. It does not mean
-rootcheck is useless — it would still catch a genuinely replaced binary — but
+rootcheck is useless: it would still catch a genuinely replaced binary: but
 it generates noise on Debian that needs to be tuned out.
 
-## Remediation — Suppressing the False Positive
+## Remediation: Suppressing the False Positive
 
 To prevent this alert from firing again, create a custom suppression rule in
 Wazuh. On the manager:
@@ -106,9 +106,9 @@ sudo systemctl restart wazuh-manager
 ## Takeaway
 
 Every SOC analyst deals with false positives. The job isn't to panic at every
-alert — it's to investigate methodically, reach a defensible conclusion, and tune
+alert: it's to investigate methodically, reach a defensible conclusion, and tune
 the tooling so real threats aren't buried in noise. This one took about two
 minutes to close with confidence.
 
-**Alert status: Closed — False Positive**
-**Rule tuned: Yes — suppressed via local_rules.xml rule 100001**
+**Alert status: Closed: False Positive**
+**Rule tuned: Yes: suppressed via local_rules.xml rule 100001**

@@ -1,8 +1,8 @@
 +++
-title = "HTB Starting Point — Vaccine"
+title = "HTB Starting Point: Vaccine"
 date = "2026-03-06T00:00:00-05:00"
 tags = ["htb", "starting-point", "linux", "ftp", "sql-injection", "postgresql", "hash-cracking", "privesc", "retired"]
-description = "Full walkthrough of Hack The Box Vaccine — FTP anonymous login, zip cracking, MD5 hash cracking, authenticated SQLi with sqlmap, and sudo vi escape to root."
+description = "Full walkthrough of Hack The Box Vaccine: FTP anonymous login, zip cracking, MD5 hash cracking, authenticated SQLi with sqlmap, and sudo vi escape to root."
 draft = false
 +++
 
@@ -11,7 +11,7 @@ draft = false
 | Field       | Value                              |
 |-------------|------------------------------------|
 | Name        | Vaccine                            |
-| Platform    | Hack The Box — Starting Point      |
+| Platform    | Hack The Box: Starting Point      |
 | Tier        | Tier 2                             |
 | Difficulty  | Very Easy                          |
 | OS          | Linux (Ubuntu 19.10)               |
@@ -59,9 +59,9 @@ PORT   STATE SERVICE VERSION
 ```
 
 Three open ports:
-- **21/tcp** — vsftpd 3.0.3, anonymous FTP login allowed, `backup.zip` present
-- **22/tcp** — OpenSSH 8.0p1
-- **80/tcp** — Apache 2.4.41, page title "MegaCorp Login"
+- **21/tcp**: vsftpd 3.0.3, anonymous FTP login allowed, `backup.zip` present
+- **22/tcp**: OpenSSH 8.0p1
+- **80/tcp**: Apache 2.4.41, page title "MegaCorp Login"
 
 ---
 
@@ -138,7 +138,7 @@ Contents:
 
 ---
 
-## 4. What's Inside the ZIP — PHP Source and MD5 Hash
+## 4. What's Inside the ZIP: PHP Source and MD5 Hash
 
 `index.php` is the login page for the web application. The relevant authentication block:
 
@@ -177,13 +177,13 @@ Result:
 
 **Admin password: `qwerty789`**
 
-Alternatively, submit the hash to any online MD5 rainbow table (crackstation.net, hashes.com) — it resolves instantly since `qwerty789` is a common password.
+Alternatively, submit the hash to any online MD5 rainbow table (crackstation.net, hashes.com): it resolves instantly since `qwerty789` is a common password.
 
 Credentials obtained: **`admin:qwerty789`**
 
 ---
 
-## 6. Web Enumeration — Port 80
+## 6. Web Enumeration: Port 80
 
 Navigating to `http://10.129.x.x/` presents a "MegaCorp Login" page. Log in with `admin:qwerty789`.
 
@@ -197,7 +197,7 @@ Testing with a single quote (`'`) in the search field immediately returns an SQL
 
 ---
 
-## 7. SQL Injection — Discovery and Exploitation with sqlmap
+## 7. SQL Injection: Discovery and Exploitation with sqlmap
 
 The `search` parameter is injectable. To use sqlmap, a valid session cookie is required since the dashboard requires authentication.
 
@@ -357,12 +357,12 @@ sudo /bin/vi /etc/postgresql/11/main/pg_hba.conf
 
 Inside vi, escape to a root shell using one of these methods:
 
-**Method 1 — direct shell escape:**
+**Method 1: direct shell escape:**
 ```
 :!/bin/bash
 ```
 
-**Method 2 — set shell variable and invoke it:**
+**Method 2: set shell variable and invoke it:**
 ```
 :set shell=/bin/sh
 :shell
@@ -417,7 +417,7 @@ nmap scan
 
 - Anonymous FTP is a dangerous default; never expose a server to it without tight firewall controls.
 - Backing up web application source to an FTP-accessible directory leaks credentials and business logic.
-- Storing passwords as unsalted MD5 offers no real protection — the hash cracks in milliseconds against any wordlist.
+- Storing passwords as unsalted MD5 offers no real protection: the hash cracks in milliseconds against any wordlist.
 - Authenticated SQL injection is still a critical vulnerability even when login requires a password.
 - PostgreSQL's `COPY FROM PROGRAM` makes `--os-shell` in sqlmap particularly effective compared to MySQL.
-- Overly permissive sudoers entries — especially for editors — are a well-known privilege escalation vector documented extensively on [GTFOBins](https://gtfobins.github.io/gtfobins/vi/).
+- Overly permissive sudoers entries: especially for editors: are a well-known privilege escalation vector documented extensively on [GTFOBins](https://gtfobins.github.io/gtfobins/vi/).

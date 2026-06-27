@@ -1,8 +1,8 @@
 +++
-title = "HTB — Shocker"
+title = "HTB: Shocker"
 date = "2026-05-05T00:00:00-05:00"
 tags = ["htb", "linux", "web", "cgi", "shellshock", "gobuster", "sudo", "perl", "retired"]
-description = "Walkthrough of Hack The Box Shocker — directory busting to find a CGI script, exploiting Shellshock (CVE-2014-6271) via a malicious User-Agent header, and escalating to root through a NOPASSWD sudo entry for Perl."
+description = "Walkthrough of Hack The Box Shocker: directory busting to find a CGI script, exploiting Shellshock (CVE-2014-6271) via a malicious User-Agent header, and escalating to root through a NOPASSWD sudo entry for Perl."
 draft = false
 +++
 
@@ -40,16 +40,16 @@ Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
 
 Two ports:
 
-- **80/tcp** — Apache 2.4.18 on Ubuntu Xenial (16.04)
-- **2222/tcp** — SSH on a non-standard port, not relevant to the intended attack path
+- **80/tcp**: Apache 2.4.18 on Ubuntu Xenial (16.04)
+- **2222/tcp**: SSH on a non-standard port, not relevant to the intended attack path
 
 The Apache version fingerprints to Ubuntu Xenial. The index page at port 80 is a static HTML file with no interesting content or links.
 
 ---
 
-## 2. Directory Enumeration — Finding cgi-bin
+## 2. Directory Enumeration: Finding cgi-bin
 
-The index page is a dead end. Run gobuster to find hidden paths. The key flag here is `-f`, which appends a trailing slash to every request — necessary because this Apache installation returns 404 (not 301) for directories without the slash, which means a standard gobuster run misses them entirely.
+The index page is a dead end. Run gobuster to find hidden paths. The key flag here is `-f`, which appends a trailing slash to every request: necessary because this Apache installation returns 404 (not 301) for directories without the slash, which means a standard gobuster run misses them entirely.
 
 ```bash
 gobuster dir -f -u http://10.10.10.56/ \
@@ -63,7 +63,7 @@ Key result:
 /cgi-bin/ (Status: 403)
 ```
 
-The 403 response confirms the directory exists but is not browsable. This is the standard Apache CGI directory — scripts placed here are executed server-side rather than served as static files. The machine name "Shocker" and the presence of `cgi-bin` point directly at Shellshock.
+The 403 response confirms the directory exists but is not browsable. This is the standard Apache CGI directory: scripts placed here are executed server-side rather than served as static files. The machine name "Shocker" and the presence of `cgi-bin` point directly at Shellshock.
 
 Next, enumerate files inside `/cgi-bin/` with a `.sh` extension:
 
@@ -100,7 +100,7 @@ Just an uptime test script
  06:46:26 up 19:15, 0 users, load average: 0.00, 0.00, 0.00
 ```
 
-The script is executing on the server and returning dynamic output (live uptime). This confirms it is a CGI script running under Apache. Shellshock works against CGI scripts because the vulnerability lies in how Bash parses environment variables — and Apache passes HTTP headers as environment variables to CGI processes.
+The script is executing on the server and returning dynamic output (live uptime). This confirms it is a CGI script running under Apache. Shellshock works against CGI scripts because the vulnerability lies in how Bash parses environment variables: and Apache passes HTTP headers as environment variables to CGI processes.
 
 ---
 
@@ -112,7 +112,7 @@ Shellshock is a vulnerability in Bash where a specially crafted environment vari
 () { :;}; <command>
 ```
 
-Apache passes HTTP headers — including `User-Agent` — as environment variables to CGI scripts. If the CGI script is executed by a vulnerable version of Bash, the injected command runs.
+Apache passes HTTP headers: including `User-Agent`: as environment variables to CGI scripts. If the CGI script is executed by a vulnerable version of Bash, the injected command runs.
 
 The `echo;` after the function definition is required to insert a blank line between the HTTP headers and body in the response. Without it, the server returns a 500 Internal Server Error because the HTTP response is malformed.
 
@@ -153,7 +153,7 @@ cat /home/shelly/user.txt
 
 ---
 
-## 6. Privilege Escalation — sudo Perl
+## 6. Privilege Escalation: sudo Perl
 
 Check sudo permissions:
 

