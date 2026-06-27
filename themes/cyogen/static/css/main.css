@@ -179,8 +179,9 @@ code, pre { font-family: var(--ff-mono); }
   padding: 6px;
   min-width: 175px;
   opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.2s, transform 0.2s;
+  visibility: hidden;
+  /* on close: wait 0.5s, then fade out over 0.35s; hide visibility after both */
+  transition: opacity 0.35s 0.5s, transform 0.35s 0.5s, visibility 0s 0.85s;
   box-shadow: 0 20px 48px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.04);
   z-index: 100;
 }
@@ -198,8 +199,10 @@ code, pre { font-family: var(--ff-mono); }
 }
 .has-dropdown:hover .dropdown {
   opacity: 1;
-  pointer-events: all;
+  visibility: visible;
   transform: translateX(-50%) translateY(0);
+  /* on open: no delay, fade in over 0.35s */
+  transition: opacity 0.35s, transform 0.35s, visibility 0s;
 }
 .dropdown-link {
   display: flex;
