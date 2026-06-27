@@ -15,9 +15,7 @@
     <div class="post-meta-top">
       {{ if $section }}
         <a href="/{{ $section }}" class="post-section-link">{{ $section }}</a>
-        <span class="meta-sep">/</span>
       {{ end }}
-      <time datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "January 2, 2006" }}</time>
       {{ with .ReadingTime }}
         <span class="meta-sep">·</span>
         <span>{{ . }} min read</span>

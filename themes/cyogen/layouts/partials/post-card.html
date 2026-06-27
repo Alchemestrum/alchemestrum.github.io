@@ -20,7 +20,6 @@
 <a href="{{ .Permalink }}" class="post-card" style="--card-accent: {{ $accent }}; --badge-bg: {{ $badgeBg }}; --badge-color: {{ $accent }}">
   <div class="post-card-meta">
     <span class="section-badge">{{ $section }}</span>
-    <time class="post-date" datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "Jan 2, 2006" }}</time>
   </div>
   <h3 class="post-card-title">{{ .Title }}</h3>
   <p class="post-card-excerpt">{{ with .Description }}{{ . }}{{ else }}{{ .Summary | plainify | truncate 140 }}{{ end }}</p>
