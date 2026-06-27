@@ -1,0 +1,126 @@
+{{ define "main" }}
+
+<!-- ===== HERO ===== -->
+<section class="hero" id="hero">
+  <div class="hero-glow"></div>
+  <div class="hero-grid"></div>
+  <div class="hero-content">
+    <div class="hero-badge">
+      <span class="pulse-dot"></span>
+      SOC Analyst &nbsp;·&nbsp; Security Researcher
+    </div>
+    <h1 class="hero-handle"><span class="logo-bracket">[</span>cyogen<span class="logo-bracket">]</span></h1>
+    <p class="hero-subtitle">Building, defending, and documenting real detection infrastructure.</p>
+    <p class="hero-description">
+      A hands-on SOC homelab spanning SIEM deployment, threat detection, case management,
+      and Active Directory — built from the ground up and fully documented.
+    </p>
+    <div class="hero-ctas">
+      <a href="/homelab" class="btn btn-primary">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <rect width="20" height="8" x="2" y="2" rx="2"/><rect width="20" height="8" x="2" y="14" rx="2"/>
+          <line x1="6" x2="6.01" y1="6" y2="6"/><line x1="6" x2="6.01" y1="18" y2="18"/>
+        </svg>
+        View the Lab
+      </a>
+      <a href="/soc" class="btn btn-secondary">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+        </svg>
+        SOC Investigations
+      </a>
+    </div>
+  </div>
+  <a href="#stack" class="hero-scroll" aria-label="Scroll down">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+      <polyline points="6 9 12 15 18 9"/>
+    </svg>
+  </a>
+</section>
+
+<!-- ===== SECURITY STACK ===== -->
+<section class="section" id="stack">
+  <div class="section-inner">
+    <div class="section-header">
+      <span class="section-label">Security Stack</span>
+      <h2 class="section-title">Tools &amp; Technology</h2>
+      <p class="section-description">The tools powering the homelab and day-to-day security work.</p>
+    </div>
+    <div class="tools-grid">
+      {{ range .Site.Data.tools }}
+      <div class="tool-card" style="--tool-color: {{ .color }}">
+        <div class="tool-icon-wrap">
+          {{ if eq .icon_type "simpleicons" }}
+            {{ $hex := .color | strings.TrimPrefix "#" }}
+            <img src="https://cdn.simpleicons.org/{{ .slug }}/{{ $hex }}" alt="{{ .name }}" width="40" height="40" loading="lazy">
+          {{ else }}
+            <div class="tool-icon-fallback">{{ .fallback }}</div>
+          {{ end }}
+        </div>
+        <div class="tool-name">{{ .name }}</div>
+        <div class="tool-category">{{ .category }}</div>
+      </div>
+      {{ end }}
+    </div>
+  </div>
+</section>
+
+<!-- ===== CERTIFICATIONS ===== -->
+{{ if .Site.Data.certs }}
+<section class="section section-alt" id="certs">
+  <div class="section-inner">
+    <div class="section-header">
+      <span class="section-label">Credentials</span>
+      <h2 class="section-title">Certifications &amp; Badges</h2>
+    </div>
+    <div class="certs-grid">
+      {{ range .Site.Data.certs }}
+      {{ if .url }}
+        <a href="{{ .url }}" target="_blank" rel="noopener" class="cert-card">
+      {{ else }}
+        <div class="cert-card">
+      {{ end }}
+        {{ if .badge }}
+          <div class="cert-badge-wrap">
+            <img src="{{ .badge }}" alt="{{ .name }} badge" loading="lazy">
+          </div>
+        {{ else }}
+          <div class="cert-badge-placeholder">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+              <circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/>
+            </svg>
+          </div>
+        {{ end }}
+        <div class="cert-info">
+          <div class="cert-name">{{ .name }}</div>
+          <div class="cert-detail">{{ .detail }}</div>
+        </div>
+      {{ if .url }}</a>{{ else }}</div>{{ end }}
+      {{ end }}
+    </div>
+  </div>
+</section>
+{{ end }}
+
+<!-- ===== RECENT POSTS ===== -->
+<section class="section" id="work">
+  <div class="section-inner">
+    <div class="section-header">
+      <span class="section-label">Latest</span>
+      <h2 class="section-title">Recent Posts</h2>
+      <p class="section-description">Documentation of lab work, alert investigations, and CTF writeups.</p>
+    </div>
+    <div class="posts-grid">
+      {{ range first 6 .Site.RegularPages.ByDate.Reverse }}
+        {{ partial "post-card.html" . }}
+      {{ end }}
+    </div>
+    <div class="section-cta">
+      <a href="/homelab" class="btn btn-secondary">All Homelab Posts</a>
+      <a href="/soc" class="btn btn-secondary">All SOC Posts</a>
+      <a href="/ctf" class="btn btn-secondary">All CTF Writeups</a>
+    </div>
+  </div>
+</section>
+
+{{ end }}

@@ -1,20 +1,16 @@
 baseURL = "https://cyogen.net/"
 languageCode = "en-us"
 title = "cyogen"
-theme = "hello-4s3ti"
+theme = "cyogen"
 paginate = 1000
 
 [params]
-  homeSubtitle = "CTF writeups & security research"
-  description = "CTF writeups & security research"
-  keywords = "ctf, security, hacking, writeups, reverse engineering"
-  defaultTheme = "dark"
-
-  customCSS = ["https://cdn.jsdelivr.net/npm/glightbox/dist/css/glightbox.min.css", "/css/custom.css"]
-  customJS  = ["https://cdn.jsdelivr.net/npm/glightbox/dist/js/glightbox.min.js", "/js/lightbox-init.js"]
+  description = "SOC homelab · detection engineering · security research"
+  keywords = "soc, cybersecurity, homelab, wazuh, splunk, ctf, security"
 
   [params.social]
     github = "https://github.com/Cyogen"
+
 
 [menu]
   [[menu.main]]

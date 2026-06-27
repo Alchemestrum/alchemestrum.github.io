@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="{{ .Site.Language.Lang | default "en" }}">
+<head>
+  {{ partial "head.html" . }}
+</head>
+<body>
+  {{ partial "header.html" . }}
+
+  <div class="page-wrapper">
+    {{ block "main" . }}{{ end }}
+  </div>
+
+  {{ partial "footer.html" . }}
+
+  <script src="/js/nav.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/glightbox/dist/js/glightbox.min.js"></script>
+  {{ if (fileExists "static/js/lightbox-init.js") }}
+  <script src="/js/lightbox-init.js"></script>
+  {{ end }}
+</body>
+</html>

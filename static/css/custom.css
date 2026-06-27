@@ -1,11 +1,1 @@
-/* Wider post content area */
-.post {
-  max-width: 1000px;
-}
-
-/* Wrap code blocks instead of horizontal scroll */
-pre {
-  white-space: pre-wrap;
-  word-break: break-word;
-  overflow-x: hidden;
-}
+/* custom.css — theme handles all styles now */

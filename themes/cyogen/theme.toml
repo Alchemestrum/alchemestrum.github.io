@@ -1,0 +1,4 @@
+name = "cyogen"
+license = "MIT"
+description = "Custom dark professional security portfolio theme"
+min_version = "0.100.0"

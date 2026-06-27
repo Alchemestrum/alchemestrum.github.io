@@ -1,0 +1,79 @@
+{{ define "main" }}
+
+{{ $section := .Section }}
+{{ $accent := "#4f8ef7" }}
+{{ if eq $section "homelab" }}{{ $accent = "#4f8ef7" }}
+{{ else if eq $section "soc" }}{{ $accent = "#f5a623" }}
+{{ else if eq $section "ctf" }}{{ $accent = "#2ecc8e" }}
+{{ else if eq $section "articles" }}{{ $accent = "#9b6af0" }}
+{{ else if eq $section "cheatsheets" }}{{ $accent = "#e85d7c" }}
+{{ end }}
+
+<article class="post-page" style="--section-accent: {{ $accent }}">
+
+  <header class="post-header">
+    <div class="post-meta-top">
+      {{ if $section }}
+        <a href="/{{ $section }}" class="post-section-link">{{ $section }}</a>
+        <span class="meta-sep">/</span>
+      {{ end }}
+      <time datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "January 2, 2006" }}</time>
+      {{ with .ReadingTime }}
+        <span class="meta-sep">·</span>
+        <span>{{ . }} min read</span>
+      {{ end }}
+    </div>
+
+    <h1 class="post-title">{{ .Title }}</h1>
+
+    {{ with .Description }}
+      <p class="post-lead">{{ . }}</p>
+    {{ end }}
+
+    {{ with .Params.tags }}
+      <div class="post-tags">
+        {{ range . }}
+          <span class="tag">{{ . }}</span>
+        {{ end }}
+      </div>
+    {{ end }}
+  </header>
+
+  {{ with .Params.cover }}
+    <div class="post-cover">
+      <img src="{{ . }}" alt="{{ $.Title }}" loading="lazy">
+    </div>
+  {{ end }}
+
+  <div class="post-content">
+    {{ .Content }}
+  </div>
+
+  <nav class="post-nav" aria-label="Post navigation">
+    {{ with .PrevInSection }}
+      <a href="{{ .Permalink }}" class="post-nav-item post-nav-prev">
+        <span class="post-nav-label">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true">
+            <line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/>
+          </svg>
+          Previous
+        </span>
+        <span class="post-nav-title">{{ .Title }}</span>
+      </a>
+    {{ else }}<div></div>{{ end }}
+    {{ with .NextInSection }}
+      <a href="{{ .Permalink }}" class="post-nav-item post-nav-next">
+        <span class="post-nav-label">
+          Next
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true">
+            <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+          </svg>
+        </span>
+        <span class="post-nav-title">{{ .Title }}</span>
+      </a>
+    {{ else }}<div></div>{{ end }}
+  </nav>
+
+</article>
+
+{{ end }}

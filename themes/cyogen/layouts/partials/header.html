@@ -1,0 +1,49 @@
+<header class="site-header" id="site-header">
+  <div class="header-inner">
+    <a href="/" class="site-logo">
+      <span class="logo-bracket">[</span>cyogen<span class="logo-bracket">]</span>
+    </a>
+
+    <nav class="site-nav" id="site-nav" aria-label="Main navigation">
+      <ul class="nav-list">
+        {{ range .Site.Menus.main }}
+          {{ if not .Parent }}
+            {{ if .HasChildren }}
+              <li class="nav-item has-dropdown">
+                <a href="{{ .URL }}" class="nav-link {{ if $.IsMenuCurrent "main" . }}active{{ end }}">
+                  {{ partial "nav-icon.html" .Identifier }}
+                  <span>{{ .Name }}</span>
+                  <svg class="chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <polyline points="6 9 12 15 18 9"/>
+                  </svg>
+                </a>
+                <ul class="dropdown" role="menu">
+                  {{ range .Children }}
+                    <li role="none">
+                      <a href="{{ .URL }}" class="dropdown-link {{ if $.IsMenuCurrent "main" . }}active{{ end }}" role="menuitem">
+                        {{ .Name }}
+                      </a>
+                    </li>
+                  {{ end }}
+                </ul>
+              </li>
+            {{ else }}
+              <li class="nav-item">
+                <a href="{{ .URL }}" class="nav-link {{ if $.IsMenuCurrent "main" . }}active{{ end }}">
+                  {{ partial "nav-icon.html" .Identifier }}
+                  <span>{{ .Name }}</span>
+                </a>
+              </li>
+            {{ end }}
+          {{ end }}
+        {{ end }}
+      </ul>
+    </nav>
+
+    <button class="nav-toggle" id="nav-toggle" aria-label="Toggle menu" aria-expanded="false">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+  </div>
+</header>

@@ -1,0 +1,35 @@
+{{ $section := .Section }}
+{{ $accent := "#4f8ef7" }}
+{{ $badgeBg := "rgba(79,142,247,0.12)" }}
+{{ if eq $section "homelab" }}
+  {{ $accent = "#4f8ef7" }}
+  {{ $badgeBg = "rgba(79,142,247,0.12)" }}
+{{ else if eq $section "soc" }}
+  {{ $accent = "#f5a623" }}
+  {{ $badgeBg = "rgba(245,166,35,0.12)" }}
+{{ else if eq $section "ctf" }}
+  {{ $accent = "#2ecc8e" }}
+  {{ $badgeBg = "rgba(46,204,142,0.12)" }}
+{{ else if eq $section "articles" }}
+  {{ $accent = "#9b6af0" }}
+  {{ $badgeBg = "rgba(155,106,240,0.12)" }}
+{{ else if eq $section "cheatsheets" }}
+  {{ $accent = "#e85d7c" }}
+  {{ $badgeBg = "rgba(232,93,124,0.12)" }}
+{{ end }}
+<a href="{{ .Permalink }}" class="post-card" style="--card-accent: {{ $accent }}; --badge-bg: {{ $badgeBg }}; --badge-color: {{ $accent }}">
+  <div class="post-card-meta">
+    <span class="section-badge">{{ $section }}</span>
+    <time class="post-date" datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "Jan 2, 2006" }}</time>
+  </div>
+  <h3 class="post-card-title">{{ .Title }}</h3>
+  <p class="post-card-excerpt">{{ with .Description }}{{ . }}{{ else }}{{ .Summary | plainify | truncate 140 }}{{ end }}</p>
+  <div class="post-card-footer">
+    <span class="read-more">Read post <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></span>
+    {{ with .Params.tags }}
+      <div class="post-card-tags">
+        {{ range first 2 . }}<span class="tag-mini">{{ . }}</span>{{ end }}
+      </div>
+    {{ end }}
+  </div>
+</a>

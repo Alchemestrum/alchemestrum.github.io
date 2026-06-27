@@ -1,0 +1,14 @@
+- name: "University of Miami"
+  detail: "Cybersecurity Program"
+  badge: /images/certs/um.png
+  url: ""
+
+- name: "TryHackMe"
+  detail: "Top X% — Active"
+  badge: /images/certs/tryhackme.png
+  url: "https://tryhackme.com/p/cyogen"
+
+- name: "HackTheBox Academy"
+  detail: "SOC Analyst Path"
+  badge: /images/certs/htb-academy.png
+  url: ""

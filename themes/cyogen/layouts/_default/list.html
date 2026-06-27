@@ -1,0 +1,82 @@
+{{ define "main" }}
+
+{{ $section := .Section | default .Title }}
+{{ $accent := "#4f8ef7" }}
+{{ if eq $section "homelab" }}{{ $accent = "#4f8ef7" }}
+{{ else if eq $section "soc" }}{{ $accent = "#f5a623" }}
+{{ else if eq $section "ctf" }}{{ $accent = "#2ecc8e" }}
+{{ else if eq $section "articles" }}{{ $accent = "#9b6af0" }}
+{{ else if eq $section "cheatsheets" }}{{ $accent = "#e85d7c" }}
+{{ end }}
+
+<div class="list-page" style="--section-accent: {{ $accent }}">
+
+  <div class="list-header">
+    <div class="list-header-inner">
+      <div class="list-breadcrumb">
+        {{ if .Parent }}
+          <a href="{{ .Parent.Permalink }}">{{ .Parent.Title }}</a>
+          <span>/</span>
+        {{ end }}
+        <span>{{ .Title }}</span>
+      </div>
+      <h1 class="list-title">{{ .Title }}</h1>
+      {{ with .Description }}
+        <p class="list-description">{{ . }}</p>
+      {{ end }}
+      {{ with .Content }}
+        <div class="list-content">{{ . }}</div>
+      {{ end }}
+    </div>
+  </div>
+
+  <div class="list-body">
+
+    {{ if .Sections }}
+    <div class="subsections">
+      <h2 class="subsections-label">Sections</h2>
+      <div class="subsections-grid">
+        {{ range .Sections }}
+        <a href="{{ .Permalink }}" class="subsection-card">
+          <div class="subsection-card-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
+            </svg>
+          </div>
+          <div>
+            <div class="subsection-card-name">{{ .Title }}</div>
+            {{ with .Description }}<div class="subsection-card-desc">{{ . }}</div>{{ end }}
+          </div>
+          <svg class="subsection-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+            <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+          </svg>
+        </a>
+        {{ end }}
+      </div>
+    </div>
+    {{ end }}
+
+    {{ if .RegularPages }}
+    <div class="posts-section">
+      {{ if .Sections }}<h2 class="subsections-label">Posts</h2>{{ end }}
+      <div class="posts-grid">
+        {{ range .RegularPages.ByDate.Reverse }}
+          {{ partial "post-card.html" . }}
+        {{ end }}
+      </div>
+    </div>
+    {{ end }}
+
+    {{ if and (not .Sections) (not .RegularPages) }}
+    <div class="empty-section">
+      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+        <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+      </svg>
+      <p>Nothing here yet — posts coming soon.</p>
+    </div>
+    {{ end }}
+
+  </div>
+</div>
+
+{{ end }}

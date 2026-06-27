@@ -1,0 +1,71 @@
+- name: Wazuh
+  category: SIEM
+  color: "#00b4d8"
+  icon_type: fallback
+  fallback: WZ
+
+- name: Splunk
+  category: Analytics
+  color: "#e56c00"
+  icon_type: simpleicons
+  slug: splunk
+
+- name: TheHive
+  category: Case Management
+  color: "#f0a030"
+  icon_type: fallback
+  fallback: TH
+
+- name: Elasticsearch
+  category: Search & Storage
+  color: "#00bfb3"
+  icon_type: simpleicons
+  slug: elasticsearch
+
+- name: Wireshark
+  category: Packet Analysis
+  color: "#1679a7"
+  icon_type: simpleicons
+  slug: wireshark
+
+- name: Nmap
+  category: Network Scanner
+  color: "#4caf50"
+  icon_type: fallback
+  fallback: NM
+
+- name: Docker
+  category: Containers
+  color: "#2496ed"
+  icon_type: simpleicons
+  slug: docker
+
+- name: Python
+  category: Scripting
+  color: "#3776ab"
+  icon_type: simpleicons
+  slug: python
+
+- name: Linux
+  category: OS
+  color: "#fcc624"
+  icon_type: simpleicons
+  slug: linux
+
+- name: Windows Server
+  category: Enterprise
+  color: "#0078d4"
+  icon_type: simpleicons
+  slug: windows
+
+- name: Active Directory
+  category: Identity & Access
+  color: "#0078d4"
+  icon_type: fallback
+  fallback: AD
+
+- name: KVM
+  category: Virtualization
+  color: "#e95420"
+  icon_type: fallback
+  fallback: KVM
