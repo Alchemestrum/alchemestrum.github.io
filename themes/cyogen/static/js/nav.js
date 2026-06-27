@@ -64,6 +64,16 @@
     if (isHome || isMatch) link.classList.add('active');
   });
 
+  /* ── Certs grid expand/collapse ── */
+  const certsGrid = document.querySelector('.certs-grid');
+  const certsBtn  = document.getElementById('certs-toggle');
+  if (certsGrid && certsBtn) {
+    certsBtn.addEventListener('click', () => {
+      const expanded = certsGrid.classList.toggle('certs-expanded');
+      certsBtn.textContent = expanded ? 'See less ↑' : 'See more ↓';
+    });
+  }
+
   /* ── Smooth scroll for hero anchor ── */
   document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     anchor.addEventListener('click', function (e) {
