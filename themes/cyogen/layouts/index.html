@@ -36,6 +36,11 @@
         alchemestrum@proton.me
       </a>
     </div>
+    {{ range .Site.Data.academic }}{{ if .badge }}
+    <a href="{{ .badge }}" class="glightbox um-badge-link">
+      <img src="{{ .badge }}" alt="University of Miami Badge" loading="lazy">
+    </a>
+    {{ end }}{{ end }}
   </div>
   <a href="#stack" class="hero-scroll" aria-label="Scroll down">
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
@@ -43,17 +48,6 @@
     </svg>
   </a>
 </section>
-
-<!-- ===== UM BADGE ===== -->
-{{ range .Site.Data.academic }}
-{{ if .badge }}
-<div class="um-badge-strip">
-  <a href="{{ .badge }}" class="glightbox um-badge-link">
-    <img src="{{ .badge }}" alt="University of Miami Badge" loading="lazy">
-  </a>
-</div>
-{{ end }}
-{{ end }}
 
 <!-- ===== SECURITY STACK ===== -->
 <section class="section" id="stack">

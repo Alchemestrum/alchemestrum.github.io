@@ -538,23 +538,18 @@ code, pre { font-family: var(--ff-mono); }
    CERTIFICATIONS
    ================================================================ */
 /* ================================================================
-   UM BADGE STRIP (below hero)
+   UM BADGE (inside hero, below CTAs)
    ================================================================ */
-.um-badge-strip {
-  display: flex;
-  justify-content: center;
-  padding: 24px 0 8px;
-  background: var(--bg);
-}
 .um-badge-link {
   display: block;
+  margin-top: 32px;
   cursor: zoom-in;
   transition: transform 0.25s, opacity 0.25s;
 }
 .um-badge-link:hover { transform: translateY(-3px); opacity: 0.85; }
 .um-badge-link img {
   display: block;
-  max-height: 120px;
+  max-height: 180px;
   width: auto;
   object-fit: contain;
 }
