@@ -209,4 +209,3 @@ sources, one forwarder, one Splunk instance.
 
 Next: Splunk Fundamentals 1 and 2 to build SPL proficiency before moving into
 Boss of the SOC investigations.
-+++
