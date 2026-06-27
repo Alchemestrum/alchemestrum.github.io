@@ -559,9 +559,9 @@ code, pre { font-family: var(--ff-mono); }
 .cert-img-link:hover { transform: translateY(-3px); opacity: 0.85; }
 .cert-img-link img {
   display: block;
-  max-height: 160px;
+  max-height: 240px;
   width: auto;
-  max-width: 260px;
+  max-width: 360px;
   object-fit: contain;
 }
 .cert-img-featured img {
