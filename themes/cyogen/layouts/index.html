@@ -64,6 +64,8 @@
           {{ if eq .icon_type "simpleicons" }}
             {{ $hex := .color | replaceRE "^#" "" }}
             <img src="https://cdn.simpleicons.org/{{ .slug }}/{{ $hex }}" alt="{{ .name }}" width="40" height="40" loading="lazy">
+          {{ else if eq .icon_type "local" }}
+            <img src="{{ .local }}" alt="{{ .name }}" width="40" height="40" loading="lazy" style="object-fit:contain;">
           {{ else }}
             <div class="tool-icon-fallback">{{ .fallback }}</div>
           {{ end }}

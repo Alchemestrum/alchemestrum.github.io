@@ -1,8 +1,8 @@
 - name: Wazuh
   category: SIEM
   color: "#00b4d8"
-  icon_type: fallback
-  fallback: WZ
+  icon_type: local
+  local: /images/tools/wazuh.png
 
 - name: Splunk
   category: Analytics
@@ -55,8 +55,8 @@
 - name: Windows Server
   category: Enterprise
   color: "#0078d4"
-  icon_type: simpleicons
-  slug: windows
+  icon_type: local
+  local: /images/tools/windows-server.jpg
 
 - name: Active Directory
   category: Identity & Access
