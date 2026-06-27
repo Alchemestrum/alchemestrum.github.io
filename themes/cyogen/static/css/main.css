@@ -826,14 +826,22 @@ code, pre { font-family: var(--ff-mono); }
   color: var(--text-2);
   padding-left: 22px;
 }
-.list-content img {
+.list-diagram {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 48px;
+}
+.list-diagram a {
   display: block;
-  margin: 24px auto 0;
+  cursor: zoom-in;
+  transition: opacity 0.25s, transform 0.25s;
+}
+.list-diagram a:hover { opacity: 0.85; transform: translateY(-2px); }
+.list-diagram img {
   max-width: 480px;
   width: 100%;
   border-radius: var(--radius-lg);
   box-shadow: 0 8px 32px rgba(0,0,0,0.4);
-  cursor: zoom-in;
 }
 .list-body {
   width: min(75vw, 1800px);

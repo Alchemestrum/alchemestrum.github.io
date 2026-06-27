@@ -24,13 +24,18 @@
       {{ with .Description }}
         <p class="list-description">{{ . }}</p>
       {{ end }}
-      {{ with .Content }}
-        <div class="list-content">{{ . }}</div>
-      {{ end }}
     </div>
   </div>
 
   <div class="list-body">
+
+    {{ with .Params.diagram }}
+    <div class="list-diagram">
+      <a href="{{ . }}" class="glightbox">
+        <img src="{{ . }}" alt="Architecture Diagram" loading="lazy">
+      </a>
+    </div>
+    {{ end }}
 
     {{ if .Sections }}
     <div class="subsections">
