@@ -1,19 +1,15 @@
 - name: "TryHackMe"
   detail: "Cat Linux"
   badge: /images/certs/catLinux.png
-  url: "https://tryhackme.com/Alchemestrum/badges/catlinux"
 
 - name: "TryHackMe"
   detail: "Networking Nerd"
   badge: /images/certs/networkingnerd.png
-  url: "https://tryhackme.com/Alchemestrum/badges/networkingnerd"
 
 - name: "TryHackMe"
   detail: "Wireshark"
   badge: /images/certs/wireshark.png
-  url: "https://tryhackme.com/Alchemestrum/badges/wireshark"
 
 - name: "TryHackMe"
   detail: "World Wide Web"
   badge: /images/certs/www.png
-  url: "https://tryhackme.com/Alchemestrum/badges/www"
