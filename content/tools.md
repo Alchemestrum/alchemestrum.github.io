@@ -14,4 +14,3 @@ The result is a server where rooted machines can be discussed freely and openly,
 
 Requires the HTB-Updates bot to be present and posting to a monitored channel.
 
-[Source Code](https://github.com/Alchemestrum/htb-season-bot) · Invite link coming soon
