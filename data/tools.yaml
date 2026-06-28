@@ -75,3 +75,9 @@
   color: "#5bc0eb"
   icon_type: simpleicons
   slug: parrotsecurity
+
+- name: Kali Linux
+  category: Red Team
+  color: "#557C94"
+  icon_type: simpleicons
+  slug: kalilinux
