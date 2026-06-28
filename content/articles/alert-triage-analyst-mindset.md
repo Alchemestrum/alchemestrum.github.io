@@ -2,117 +2,103 @@
 title = "Alert Triage and the SOC Analyst Mindset"
 date = "2026-06-28T00:00:00-05:00"
 tags = ["soc", "triage", "incident-response", "windows-events", "sysmon", "edr", "methodology"]
-description = "How a SOC analyst actually thinks through alert queues, ambiguous scenarios, and investigation decisions. Concrete answers, not general advice."
+description = "What I've learned about how analysts think through alert queues, ambiguous scenarios, and investigation decisions — built from homelab work and deliberate study, not production experience."
 draft = false
 +++
 
-The skills SOC interviews test are not about knowing the right answer to a scripted question. They are about whether you can move through ambiguity with a defensible process. The questions are proxies. What they are measuring is whether you think in chains or in isolated events, whether you contain before you fully understand, and whether you can make a call when the data is incomplete.
+I haven't worked a production SOC shift. Everything I know about alert triage I've built through homelab work, CTF investigations, deliberate simulation, and studying how real analysts document their process. That framing matters. What follows is not documentation of production experience — it is what I've come to understand about how this thinking works, and how I'd approach it when I get there.
 
-These are the actual scenarios that come up, and what the real answers look like.
-
----
-
-## Scenario: 50 Alerts in the Queue
-
-You come on shift. There are 50 open alerts. How do you prioritize?
-
-The wrong answer is to start at the top and work down. The right answer is to triage the queue before investigating anything.
-
-**Scan for these in order:**
-
-1. **Lateral movement indicators** — any alert suggesting an attacker has already moved between systems goes to the top. Lateral movement means the incident is actively spreading. Every minute is additional scope.
-2. **Critical assets** — domain controllers, payment systems, VPN concentrators, executive endpoints. The same behavior on a developer laptop and a domain controller are not the same alert.
-3. **Correlated clusters** — three alerts from the same host within fifteen minutes, or the same source IP across multiple alerts, are a pattern. Isolated alerts on unrelated assets are lower priority than a cluster pointing at one target.
-4. **Active vs. completed** — an alert that fired at 3 AM is historical. An alert that fired two minutes ago may still be live. Active events take priority.
-
-The severity rating on the alert is a starting point, not the answer. A critical-severity alert on an isolated, non-critical test machine can wait. A medium-severity alert showing new scheduled task creation on a domain controller cannot.
+I'm documenting it here because writing it out is how I test whether I actually understand it, or just think I do.
 
 ---
 
-## Scenario: PowerShell Download Cradle Alert
+## How I Think About a Queue Full of Alerts
 
-An alert fires for a PowerShell command containing `IEX` and a web request. Walk through the investigation.
+The version of this I see most often framed as advice is: "start with the highest severity." I don't think that's right, and the more I've studied triage methodology the more I think severity ratings are a starting point, not a prioritization system.
 
-**First question: what spawned PowerShell?**
+The way I understand it: you triage the queue before you investigate anything. You're looking for patterns across all the open alerts before you pull any single one.
 
-Pull Sysmon Event ID 1 (process creation) for the PowerShell process. Look at the `ParentImage` field. If the parent is `WINWORD.EXE`, `EXCEL.EXE`, or `OUTLOOK.EXE`, you have a likely phishing execution chain and the priority increases immediately. If the parent is a scheduled task runner or a known admin tool, the context changes.
+What I'd look for first, in order:
 
-**Second question: what was the full command line?**
+1. **Lateral movement** — if any alert suggests an attacker has moved between systems, that goes to the top immediately. The incident is actively spreading. Every other alert can wait.
+2. **Critical assets** — a domain controller, a payment system, an executive's endpoint. The same behavior on a developer's laptop and a domain controller are not the same alert, regardless of how the SIEM scored them.
+3. **Correlated clusters** — three alerts from the same host inside fifteen minutes, or the same source IP appearing across multiple unrelated alerts. Isolated noise is low priority. A pattern pointing at one target is not.
+4. **Active vs. historical** — an alert that fired at 3 AM and is sitting untouched is historical. An alert that fired two minutes ago may still be live.
 
-Event ID 4688 (process creation with command line logging enabled) or Sysmon Event ID 1 captures this. Obfuscated commands — heavy use of backticks, concatenation, base64 encoded strings, `[System.Text.Encoding]::Unicode.GetString` — indicate deliberate evasion. Note the exact URL or string being invoked.
+The thing I keep reminding myself: a critical-severity alert on a sandboxed test machine is probably less urgent than a medium-severity alert showing a new scheduled task on a domain controller. Severity tells you what the rule thinks. Context tells you what it means.
 
-**Third question: did it succeed?**
+---
 
-Check Sysmon Event ID 3 (network connection) for an outbound connection from the PowerShell process around the same timestamp. If the connection fired, the download attempt reached the network. Check firewall or proxy logs to see if the destination IP or domain was reachable, and whether a response came back.
+## Walking Through a PowerShell Alert
 
-**Fourth question: what landed on disk?**
+When I've worked through this type of alert in homelab simulations — and in the Kerberoasting and StuxBot investigations I've documented here — the logic I've developed is to build a chain, not answer a single question.
 
-Sysmon Event ID 11 (FileCreate) for files written during the PowerShell execution window. If a file was dropped, hash it immediately and check VirusTotal. Also check Event ID 15 (FileCreateStreamHash), which captures alternate data stream creation — a common technique for marking downloaded files.
+An alert fires for a PowerShell process with a download cradle in the command line. Here's the sequence I'd work through:
 
-**Fifth question: what ran after?**
+**What spawned PowerShell?** Sysmon Event ID 1 captures this in the `ParentImage` field. If the parent is a Word document, an Excel file, or an Outlook process, that's a likely phishing execution chain and the urgency changes. If the parent is a scheduled task that's been running for months, the context changes completely.
 
-Sysmon Event ID 1 again, looking for child processes spawned by PowerShell in the window after execution. An unexpected binary launching from a temp directory, or PowerShell spawning another PowerShell instance with encoded arguments, indicates the payload executed.
+**What was the full command line?** Event ID 4688 captures process creation with command line arguments if auditing is configured, but Sysmon Event ID 1 is more reliable because it doesn't depend on that policy being set. Obfuscated arguments — base64 strings, concatenated characters, `[System.Text.Encoding]::Unicode.GetString` patterns — indicate someone trying to avoid detection. That's worth noting separately from what the command actually does.
 
-**The pivot chain for this scenario:**
+**Did the network connection fire?** Sysmon Event ID 3 records network connections per process. I'd look for an outbound connection from that PowerShell process within the same time window as the alert. If it connected out, I'd check firewall or proxy logs to see if the destination responded.
+
+**What landed on disk?** Sysmon Event ID 11 (FileCreate) in the window after execution. If something was written to a temp directory or an AppData folder, I'd hash it immediately and check it against threat intel. Event ID 15 covers alternate data stream creation, which is used for zone identifier marking on downloaded files.
+
+**What ran next?** Back to Sysmon Event ID 1, looking for child processes spawned by PowerShell. If PowerShell spawned something else — especially from a temp path or with encoded arguments — that's the payload executing.
+
+The chain I follow looks like this:
 
 ```
 Alert → PowerShell process (Sysmon 1) → Parent process (what spawned it)
-     → Command line (4688/Sysmon 1) → Network connection (Sysmon 3)
+     → Command line (4688 / Sysmon 1) → Network connection (Sysmon 3)
      → Files written (Sysmon 11/15) → Child processes (Sysmon 1)
      → Registry changes (Sysmon 12/13) → Persistence check
 ```
 
-If you reach the end of that chain and everything is benign — parent is a legitimate admin tool, the URL is a known internal endpoint, no files dropped, no child processes — you have enough to close it with documentation. If anything in the chain is unexpected, you have a true positive and a containment decision.
+If I reach the end of that chain and everything is explainable — known parent, internal endpoint, no files dropped, no children — that's enough to close with documentation. If anything in the chain is unexpected, I have a true positive and a containment decision to make.
 
 ---
 
-## Scenario: User Clicked a Phishing Link
+## The Phishing Scenario
 
-A user calls the helpdesk and says they clicked a link in an email. What do you do?
+A user calls and says they clicked a link. What do I do?
 
-**Contain first, investigate second.** If your EDR supports network isolation, isolate the endpoint before you have the full picture. An attacker who already has execution on the host can pivot to other systems while you are still reading logs.
+My understanding of the correct order here: contain first, investigate second. If the EDR supports network isolation, isolate the endpoint before you have the full picture. An attacker who already has execution on the host can move laterally while you're reading logs.
 
-Then work backwards:
+After isolation, I'd work backwards:
 
-1. **Identify the email** — pull it from the email gateway. Get the sender address, the sending server IP, the URL or attachment, and the list of other recipients. The same email in fifty mailboxes is a different response than a targeted delivery to one person.
+- **Identify the email** — sender, sending IP, the URL or attachment, and who else received it. The same email in fifty mailboxes is a very different response than a targeted single delivery.
+- **Check what the URL actually served** — was it a credential harvester, a drive-by download, or a redirect chain? URLScan.io or a detonation sandbox shows the behavior without re-clicking it. If it was a credential harvesting page, I'd reset the user's credentials immediately, before confirming whether they submitted anything. You can re-issue a password. You can't un-leak one.
+- **Check the endpoint** — what process spawned from the browser after the click? Sysmon Event ID 1. Any scripting engine, document viewer, or unexpected binary that launched from the browser in the window after the click gets treated as execution until I can prove otherwise.
+- **Check authentication logs** — did the account log in from somewhere new after the click? Event ID 4624 (successful logon) with an unexpected source IP, or 4648 (logon with explicit credentials) from an unfamiliar process, means credentials were used.
+- **Scope it** — did the same domain or sending IP appear in other mailboxes? Did the file hash show up on other endpoints? I'd treat it as a campaign until I can prove it was isolated.
 
-2. **Check the URL** — was it a credential harvester, a drive-by download, or a redirect chain? URLScan.io or a sandbox environment shows what the URL actually served. A credential harvesting page means you reset credentials immediately, even before you know if they were submitted. You cannot un-leak a password; you can re-issue one.
-
-3. **Check the endpoint** — what process spawned from the browser after the click? Sysmon Event ID 1 captures child processes of the browser executable. Any scripting engine, document renderer, or unexpected binary that spawned from the browser within thirty seconds of the click is worth treating as execution until proven otherwise.
-
-4. **Check authentication logs** — if credentials were potentially harvested, did the user's account authenticate from an unexpected location after the click? Event ID 4624 (successful logon) with an unusual source IP, or 4648 (logon with explicit credentials) from an unfamiliar process, indicates the credentials were used.
-
-5. **Scope the campaign** — search for the sending domain, the URL domain, and any file hashes across all endpoints. Treat this as a campaign until proven otherwise.
-
-**The reset-first instinct matters.** Waiting to confirm credential submission before resetting a password is the wrong call. If the URL served a login page and the user interacted with it, reset the password and move the credential compromise question to "verify whether it was actually used" rather than "wait and see."
+The thing I've internalized about this scenario: waiting to confirm credential submission before resetting is the wrong instinct. By the time you confirm it, it may already matter.
 
 ---
 
-## Scenario: This Might Be Legitimate
+## The Ambiguous Case
 
-An alert fires for PowerShell execution on a finance workstation at 11 PM. It might be an admin running a script. It might not be.
+An alert fires for PowerShell execution on a finance workstation at 11 PM. It could be an admin running a script. It could be something else.
 
-This is the scenario that actually separates analysts. The temptation is to close it as a false positive to keep the queue clean, or escalate immediately to avoid responsibility. Neither is right.
+This is the hardest category to get right, and I think it's where a lot of people either over-escalate or close things too fast to keep the queue manageable. Both are wrong.
 
-**Work the question:** what would this look like if it were malicious, and does the evidence support that?
+The way I've come to think about it: ask what this would look like if it were malicious, and then check whether the evidence supports that.
 
-Check the parent process. If PowerShell was spawned by Task Scheduler with a task that has existed for six months and fires every night at 11 PM, that is a different story than PowerShell spawned interactively by a user who is not typically on shift at that hour.
+- If PowerShell was spawned by Task Scheduler and that scheduled task has fired at 11 PM every night for six months, that's a different story than PowerShell spawned interactively at an odd hour by a user who shouldn't be working.
+- If the account is a named user on a finance workstation, is that user in a role where running PowerShell scripts is expected? Finance workstations running scripts outside business hours with no established pattern is a legitimate question.
+- If the command calls an internal endpoint with a known path, that's different from encoded arguments making outbound connections.
 
-Check the account. Is it a named user account or a service account? Is this user in a role that would legitimately run PowerShell scripts? HR and finance workstations running PowerShell outside business hours with no established scheduled task is a legitimate concern.
+If I work through the parent process, the account, the command, and the network activity and everything is explainable, I'd close it with documentation of what I checked and why I assessed it benign. If the same behavior fires again, that record saves the next analyst from starting from scratch.
 
-Check the command. A script that calls internal endpoints with a known path is different from a script using encoded arguments or calling out to an external IP.
+If anything in that chain is unexpected, the investigation escalates.
 
-If you reach a point where you have checked the parent, the account, the command, and the network activity, and nothing is anomalous, close it with documentation. Record what you checked and why you assessed it as benign. If the same behavior fires again, that record tells the next analyst you already looked at this.
-
-If anything in that chain is unexpected, you have a true positive and the investigation escalates.
-
-**The principle behind the ambiguous case:** you are not trying to prove guilt or innocence. You are trying to gather enough context to make a defensible decision. Document the reasoning. If you were wrong, the documentation tells you why.
+What I've taken from studying this: you're not trying to prove something is malicious or prove it's clean. You're trying to build enough documented context to make a defensible call either way. The documentation matters even if you get it wrong, because it shows you were operating a process, not guessing.
 
 ---
 
-## The Event IDs That Matter
+## Event IDs I've Built Into My Reference
 
-The Windows event IDs you should know without looking up:
+From building detections in Wazuh and running Windows log analysis in Splunk, these are the ones I know without looking them up:
 
 | ID | Event |
 |---|---|
@@ -120,24 +106,22 @@ The Windows event IDs you should know without looking up:
 | 4625 | Failed logon |
 | 4648 | Logon with explicit credentials |
 | 4768 | Kerberos TGT request |
-| 4769 | Kerberos service ticket request — RC4 encryption (type 0x17) is a Kerberoasting indicator |
+| 4769 | Kerberos service ticket request (RC4 encryption type 0x17 = Kerberoasting indicator) |
 | 4776 | NTLM credential validation |
 | 4720 | User account created |
 | 4732 | User added to local privileged group |
-| 4688 | Process creation (requires command line auditing to be useful) |
+| 4688 | Process creation |
 | 4698 | Scheduled task created |
 | 1102 | Security audit log cleared |
 
-Event ID 1102 is an escalation trigger on its own. Log clearing after any suspicious activity means an attacker is covering tracks. It does not close the investigation — it escalates it.
+Event ID 1102 is worth treating as its own escalation trigger. Log clearing after any suspicious activity isn't the end of the investigation — it's an indication that someone is covering tracks, which makes everything before it more significant.
 
-Sysmon fills the gaps that native Windows logging leaves. Event ID 1 (process creation with full command line), Event ID 3 (network connection per process), Event ID 10 (LSASS access), and Event ID 22 (DNS query) are the most operationally useful for alert investigation.
+Sysmon fills the gaps native Windows logging leaves open. Event ID 1 (process creation with full command line), Event ID 3 (network connection attributed to a specific process), Event ID 10 (LSASS access), and Event ID 22 (DNS query) have come up in nearly every investigation I've run in the homelab.
 
 ---
 
-## The Default Posture
+## What I'm Still Building
 
-Every decision in a SOC has a defensible version and an indefensible version. Closing a true positive as a false positive because the queue is busy is indefensible. Escalating without any supporting evidence is indefensible. Making a documented call based on what you checked and what the evidence showed — even if you got it wrong — is defensible.
+There's a version of this article that reads as confident instruction, and I actively didn't want to write that version. The scenarios above are how I understand these things work — built from homelab simulations, documentation of real SOC workflows, and the kind of deliberate practice that comes from not having the production environment yet.
 
-The process matters as much as the outcome. Build the timeline, document what you checked, record why you concluded what you concluded. If it escalates, the next analyst has context. If it comes back, you have a record. If it turns out you were wrong, you have a paper trail that shows you were operating in good faith.
-
-That is the job.
+The gap between homelab scale and a real alert queue is real. But the thinking transfers. That's the point of building the lab.
