@@ -12,7 +12,7 @@
 
 - name: "SPL Lab"
   description: "Splunk SPL usage, log analysis, and detection rule development"
-  url: "/homelab/splunk/splunk-spl-log-analysis"
+  url: "/soc/splunk/splunk-spl-log-analysis"
 
 - name: "Network Traffic Analysis"
   description: "Packet analysis and anomaly detection with Wireshark"
