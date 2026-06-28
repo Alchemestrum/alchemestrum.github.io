@@ -22,7 +22,7 @@ It would be unfair not to acknowledge how much Microsoft contributed to this shi
 
 [Windows 11 launched with TPM 2.0 and Secure Boot requirements](https://en.wikipedia.org/wiki/Windows_Recall) that instantly disqualified millions of capable machines. Not broken machines. Not old machines. Machines that ran Windows 10 perfectly and would have continued to do so. The message to those users was: buy new hardware or get left behind.
 
-Then came [Windows Recall](https://www.pcworld.com/article/2918617/is-windows-recall-storing-your-confidential-data-how-to-protect-yourself.html) — a feature that takes a screenshot of your desktop every few seconds and feeds it to an on-device AI so you can search your own activity history. The security community reacted immediately and loudly. Microsoft pulled it, then quietly brought it back. The trust damage was done.
+Then came [Windows Recall](https://www.pcworld.com/article/2918617/is-windows-recall-storing-your-confidential-data-how-to-protect-yourself.html): a feature that takes a screenshot of your desktop every few seconds and feeds it to an on-device AI so you can search your own activity history. The security community reacted immediately and loudly. Microsoft pulled it, then quietly brought it back. The trust damage was done.
 
 Add to that: ads appearing in the Start menu, pre-pinned apps users never asked for, Teams forced onto the taskbar until the backlash got loud enough to reverse it, and an OS that ships with enough startup bloat to measurably impact performance on mid-range hardware. Windows 11 is not a bad operating system. It is an operating system that does not trust you to make your own decisions, and it shows.
 
