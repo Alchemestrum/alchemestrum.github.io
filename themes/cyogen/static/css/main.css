@@ -468,11 +468,14 @@ code, pre { font-family: var(--ff-mono); }
    TOOLS / STACK GRID
    ================================================================ */
 .tools-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
   gap: 14px;
 }
 .tool-card {
+  width: 130px;
+  flex-shrink: 0;
   background: var(--bg-card);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
@@ -1294,7 +1297,7 @@ code, pre { font-family: var(--ff-mono); }
   .chevron { display: none; }
   .hero-ctas { flex-direction: column; align-items: center; }
   .posts-grid { grid-template-columns: 1fr; }
-  .tools-grid { grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); }
+  .tools-grid .tool-card { width: 110px; }
   .post-nav { grid-template-columns: 1fr; }
   .post-nav-next { text-align: left; }
   .post-nav-next .post-nav-label { justify-content: flex-start; }
