@@ -4,7 +4,7 @@
 
 - name: "Kerberoasting Lab"
   description: "Windows attack and defense: Kerberoasting simulation and detection"
-  url: "/homelab/active-directory/kerberoasting-attack-defense"
+  url: "/soc/investigations/kerberoasting-attack-defense"
 
 - name: "StuxBot Hunting"
   description: "Threat hunting exercise tracking a StuxBot RAT across endpoint logs"
