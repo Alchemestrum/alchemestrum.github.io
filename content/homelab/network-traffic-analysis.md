@@ -86,6 +86,8 @@ sudo tcpdump -i eth0 less 64
 sudo tcpdump -i eth0 host 192.168.0.1 and port 23
 ```
 
+![Tcpdump verbose output with hex and ASCII](/images/posts/nta/tcpdump-output.png)
+
 ## Wireshark
 
 Wireshark organizes each packet across three panes:
@@ -96,6 +98,8 @@ Wireshark organizes each packet across three panes:
 
 Each row in the bytes pane shows the data offset, sixteen hex bytes, and sixteen ASCII bytes. Non-printable bytes appear as a period.
 
+![Wireshark with packet list, details, and bytes panes](/images/posts/nta/wireshark-ui.png)
+
 ## Protocol Reference: TLS Handshake
 
 A TLS session over HTTPS starts with a TCP connection on port 443, followed by a ClientHello to begin the handshake.
@@ -103,6 +107,8 @@ A TLS session over HTTPS starts with a TCP connection on port 443, followed by a
 The handshake negotiates: session ID, peer x509 certificate, compression algorithm, cipher spec, whether the session is resumable, and the 48-byte master secret shared between client and server.
 
 After the handshake completes, all payload data flows as TLS Application Data (opaque to passive capture). You can see that a connection exists and its size, but not the content.
+
+![TLS handshake visible in Wireshark capture](/images/posts/nta/tls-handshake.png)
 
 TLS handshake steps (RFC 2246):
 
@@ -120,6 +126,8 @@ FTP traffic is cleartext. FTP commands in capture:
 ```
 USER, PASS, PORT, PASV, LIST, CWD, PWD, SIZE, RETR, QUIT
 ```
+
+![FTP request/response capture in Wireshark](/images/posts/nta/ftp-capture.png)
 
 Requests from client to server, responses back. In Wireshark, follow the TCP stream on any FTP session to see credentials and file listings in plaintext. Any environment still running FTP for internal file transfer should flag this immediately.
 

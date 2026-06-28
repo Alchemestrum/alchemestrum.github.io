@@ -33,7 +33,7 @@ Rubeus.exe kerberoast /outfile:spn.txt
 
 Rubeus queries the domain for all accounts with SPNs registered, requests a TGS ticket for each one, and dumps the hashes to a file. The output looks like a wall of Kerberos ticket data in hashcat-ready format.
 
-![Rubeus output showing extracted TGS tickets](https://github.com/user-attachments/assets/a1dd7db9-d75c-4c1c-89d8-73fc78928428)
+![Rubeus output showing extracted TGS tickets](/images/posts/kerberoasting/rubeus-output.png)
 
 ### Step 2: Crack the Hash
 
@@ -49,7 +49,7 @@ hashcat -m 13100 -a 0 spn.txt passwords.txt --outfile="cracked.txt"
 
 If Hashcat returns a hardware error, add `--force`. Once finished, the cracked output shows the plaintext password alongside the hash.
 
-![Hashcat cracked output](https://github.com/user-attachments/assets/08612ccd-b5d7-4c6b-a162-60c66bbc61b7)
+![Hashcat cracked output](/images/posts/kerberoasting/hashcat-cracked.png)
 
 #### John the Ripper
 
@@ -66,7 +66,7 @@ The primary detection signal is Event ID 4769 (Kerberos Service Ticket Operation
 - Ticket Encryption Type: `0x17` (RC4-HMAC) — modern accounts use AES, so RC4 requests stand out
 - Multiple 4769 events in a short window targeting different SPNs
 
-![Event ID 4769 in Event Viewer](https://github.com/user-attachments/assets/61991542-10d9-4dbd-91c8-242504c342db)
+![Event ID 4769 in Event Viewer](/images/posts/kerberoasting/event-4769.png)
 
 The most reliable detection trap is a **honeypot service account**:
 

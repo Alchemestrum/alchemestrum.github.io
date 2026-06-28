@@ -46,6 +46,8 @@ index=* sourcetype="WinEventLog:Security" EventCode=4768
 
 A single account dominating this event is normal for service accounts that authenticate constantly. An account that normally sits at the bottom suddenly appearing at the top is worth investigating.
 
+![Kerberos ticket volume query results in Splunk](/images/posts/spl-lab/kerberos-query.png)
+
 ---
 
 ## Query 2: SYSTEM Account Logons Per Computer
@@ -59,6 +61,8 @@ index=* sourcetype="WinEventLog:Security" EventCode=4624 Account_Name=SYSTEM
 ```
 
 Event 4624 is a successful logon. Filtering to SYSTEM accounts and grouping by machine gives a baseline for normal SYSTEM activity across the environment. A machine that suddenly shows up here that did not appear before warrants a closer look.
+
+![SYSTEM account logon count per computer](/images/posts/spl-lab/system-logon-query.png)
 
 ---
 
@@ -80,6 +84,8 @@ Breaking it down:
 - `count as login_attempts` counts total events per account
 - `where (last_login - first_login) <= 600` filters to accounts whose entire observed logon activity fits within 600 seconds (10 minutes)
 - `sort -login_attempts` shows highest volume first
+
+![Brute force detection query grouped by 10-minute windows](/images/posts/spl-lab/10min-brute-query.png)
 
 An account with 200+ logon events within a 10-minute window when first and last timestamps are only 8 minutes apart is a brute force pattern. Combined with checking 4625 (failed logons) alongside 4624, this surfaces both successful and failed spray attempts.
 
