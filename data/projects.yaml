@@ -24,4 +24,4 @@
 
 - name: "HTB Season Bot"
   description: "Discord bot that auto-creates solver-only channels when HTB root flags are submitted"
-  url: "https://github.com/Alchemestrum/htb-season-bot"
+  url: "/homelab/htb-season-bot"
