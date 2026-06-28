@@ -7,31 +7,15 @@ draft = false
 +++
 
 The lab already has Wazuh running as the primary SIEM. Splunk is the industry
-standard: most enterprise SOC job postings list it as a requirement. The goal
-here is to run both on the same hardware, switching between them as needed, and
-use Splunk for Boss of the SOC investigations and SPL practice.
+standard: most enterprise SOC job postings list it as a requirement. Both are
+now running simultaneously on the same hardware. Wazuh handles endpoint detection
+and case management. Splunk handles log analysis, SPL practice, and Boss of the SOC
+investigations.
 
 ## Hardware
 
 - **SIEM Server** (Debian, `10.0.42.114`): Splunk Enterprise server
 - **Arch Linux Workstation**: Splunk Universal Forwarder, daily driver
-
-## Disabling Wazuh
-
-Since both SIEMs share the same server, Wazuh gets disabled before Splunk starts.
-Switching between them is a clean service toggle:
-
-```bash
-sudo systemctl stop wazuh-manager wazuh-indexer wazuh-dashboard
-sudo systemctl disable wazuh-manager wazuh-indexer wazuh-dashboard
-```
-
-To switch back to Wazuh later:
-
-```bash
-sudo systemctl stop SplunkForwarder
-sudo systemctl enable --now wazuh-manager wazuh-indexer wazuh-dashboard
-```
 
 ## Installing Splunk Enterprise
 
