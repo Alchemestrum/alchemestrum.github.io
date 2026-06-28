@@ -3,7 +3,7 @@ title = "The Homelab to Production Gap: Log Volume and Retention Costs"
 date = "2026-06-28T00:00:00-05:00"
 tags = ["soc", "splunk", "elasticsearch", "wazuh", "siem", "homelab", "production", "opinion"]
 description = "At homelab scale, retention is just a disk question. At production scale, log volume and storage costs are where most SOC pipelines break down. Here is what changes and why it matters."
-draft = false
+draft = true
 +++
 
 A comment on a recent LinkedIn post asked a question worth writing about properly: how are you handling log volume and retention costs as you scale a simulation? That is where most homelab to production transitions break down.
