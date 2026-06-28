@@ -1207,6 +1207,11 @@ code, pre { font-family: var(--ff-mono); }
   color: var(--text);
   line-height: 1.4;
 }
+.giscus-wrap {
+  margin-top: 64px;
+  padding-top: 48px;
+  border-top: 1px solid var(--border);
+}
 
 /* ================================================================
    FOOTER
