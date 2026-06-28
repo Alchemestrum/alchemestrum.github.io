@@ -8,7 +8,11 @@ draft = true
 
 A comment on a recent LinkedIn post asked a question worth writing about properly: how are you handling log volume and retention costs as you scale a simulation? That is where most homelab to production transitions break down.
 
-It is a good question. Here is the honest answer.
+It is a good question. A great one, actually, and not because it is technically difficult to answer. It is great because it targets the exact blind spot a homelab creates.
+
+When everything runs on local hardware with no licensing costs and unlimited cheap storage, you never develop intuition for the constraints that govern real SOC architecture decisions. You can build a technically correct detection pipeline and still have no feel for why an enterprise would filter certain log sources before they hit the SIEM, or why retention policies exist as a cost management tool and not just a compliance checkbox. The question essentially asks: do you understand the economics and engineering tradeoffs that production environments are built around, or do you just understand how the tools work in isolation? Those are two different kinds of knowledge.
+
+It is worth asking yourself that question while you build, not after. Here is the honest answer to where I am.
 
 ## At Homelab Scale, This Is Not a Problem
 
