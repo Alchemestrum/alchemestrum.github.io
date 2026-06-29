@@ -20,7 +20,7 @@ Host under analysis: `WS001.eagle.local` (`192.168.28.130`)
 
 ## Starting Point: The Phishing Email
 
-Hypothesis: a user opened a suspicious attachment. Search Sysmon event code 15 (FileCreateStreamHash) to find downloads with Zone.Identifier marks — anything downloaded from the internet carries this mark.
+Hypothesis: a user opened a suspicious attachment. Search Sysmon event code 15 (FileCreateStreamHash) to find downloads with Zone.Identifier marks. Anything downloaded from the internet carries this mark.
 
 ```
 event.code:15 AND file.name:*invoice.one

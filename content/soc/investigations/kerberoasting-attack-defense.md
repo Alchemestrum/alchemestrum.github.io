@@ -63,7 +63,7 @@ sudo john spn.txt --fork=4 --format=krb5tgs --wordlist=passwords.txt --pot=resul
 
 The primary detection signal is Event ID 4769 (Kerberos Service Ticket Operations). A Kerberoasting attempt will generate 4769 events with:
 
-- Ticket Encryption Type: `0x17` (RC4-HMAC) — modern accounts use AES, so RC4 requests stand out
+- Ticket Encryption Type: `0x17` (RC4-HMAC). Modern accounts use AES, so RC4 requests stand out
 - Multiple 4769 events in a short window targeting different SPNs
 
 ![Event ID 4769 in Event Viewer](/images/posts/kerberoasting/event-4769.png)
@@ -72,13 +72,13 @@ The most reliable detection trap is a **honeypot service account**:
 
 - Create an account that looks appealing (has privs, has an SPN registered, appears to have been around for 2+ years)
 - Set a strong password (100+ characters) so it never actually cracks
-- Alert on ANY 4769 targeting that account's SPN — successful or not
+- Alert on ANY 4769 targeting that account's SPN, successful or not
 
 Any activity against a honeypot SPN is suspicious by definition. No legitimate service should be requesting tickets for an account that does not actually run a service.
 
 ## Defense
 
 - Audit all SPNs in the domain and disable any that are no longer in use
-- Service accounts must have long, randomly generated passwords (100+ characters minimum) — managed service accounts (gMSA) rotate automatically and are the better option
+- Service accounts must have long, randomly generated passwords (100+ characters minimum). Managed service accounts (gMSA) rotate automatically and are the better option
 - Use Group Managed Service Accounts (gMSA) wherever possible to eliminate human-set passwords from the equation entirely
 - Monitor for RC4 encryption type requests in 4769 events, especially in bulk
