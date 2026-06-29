@@ -1,10 +1,10 @@
 +++
-date = '2026-04-02T00:00:00-00:00'
+title = "HTB Season Bot"
+date = "2026-04-02T00:00:00-05:00"
+tags = ["discord", "hackthebox", "python", "automation"]
+description = "A Discord bot that automatically creates spoiler-locked channels for HackTheBox machines as they get solved."
 draft = false
-title = 'Tools'
 +++
-
-## HTB Season Bot
 
 A Discord bot built for HackTheBox seasonal Discord servers. The problem it solves: how do you let people discuss a machine without spoiling it for everyone who hasn't solved it yet?
 
@@ -13,4 +13,3 @@ When a user submits a root flag, the HTB-Updates bot posts a badge in a monitore
 The result is a server where rooted machines can be discussed freely and openly, without any risk to players still working through them.
 
 Requires the HTB-Updates bot to be present and posting to a monitored channel.
-
