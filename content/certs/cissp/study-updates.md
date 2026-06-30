@@ -8,4 +8,6 @@ draft = false
 
 ## Day 1
 
-Domains 1 and 5 video covered (Pete Zerger's CISSP Exam Cram). Material was largely familiar coming from Sec+ and CySA+. Repeated the viewing for deeper retention before moving to Day 2.
+Domains 1 and 5 video covered (Pete Zerger's CISSP Exam Cram). Material was largely familiar coming from Sec+ and CySA+. Repeating the video once more, but only to refine the handwritten notes taken during the first pass.
+
+Most of my CISSP notes are handwritten. Whether those make it onto the site is still undecided.
