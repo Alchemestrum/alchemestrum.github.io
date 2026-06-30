@@ -98,10 +98,16 @@ paginate = 1000
     weight = 2
 
   [[menu.main]]
-    identifier = "cissp"
-    name = "cissp"
-    url = "/cissp"
+    identifier = "certs"
+    name = "certs"
+    url = "/certs"
     weight = 4
+  [[menu.main]]
+    identifier = "certs-cissp"
+    name = "CISSP"
+    url = "/certs/cissp"
+    parent = "certs"
+    weight = 1
 
   [[menu.main]]
     identifier = "articles"
