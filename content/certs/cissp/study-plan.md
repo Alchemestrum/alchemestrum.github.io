@@ -18,8 +18,6 @@ Map the entire 1,000-page book into your brain via high-density video before ope
 - **Focus:** Domain 1 (Risk Management) and Domain 5 (Identity & Access Management)
 - **Goal:** These are the most heavily weighted managerial domains. Take notes only on concepts that feel foreign to an IT engineer: Business Impact Analysis, Risk Frameworks, etc.
 
-**Progress (Day 1 complete):** Domains 1 and 5 video covered. Material was largely familiar coming from Sec+ and CySA+. Repeating the viewing for deeper retention before moving to Day 2.
-
 ---
 
 ### Day 2: Technical Calibration
