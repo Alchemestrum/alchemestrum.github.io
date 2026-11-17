@@ -1,0 +1,418 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Trump Money Web</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;600;800&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: evidence-board: header + filter strip, graph canvas left, dossier panel right (stacks on phones) */
+:root{
+  --bg:#f3f4f1; --panel:#ffffff; --fg:#1b1f24; --muted:#5d6670; --line:#d7dbd6;
+  --money:#b7791f; --gov:#2b6cb0; --tie:#8a929b;
+  --family:#c53030; --assoc:#dd6b20; --venture:#9b2c2c; --outside:#4a5568; --foreign:#2f855a; --govnode:#2b6cb0; --public:#6b46c1;
+  --font-body:"Public Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --font-mono:"JetBrains Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#14171b; --panel:#1c2026; --fg:#e7eaee; --muted:#9aa4ae; --line:#2e343c;
+  --money:#ecc94b; --gov:#63b3ed; --tie:#6b7480;
+  --family:#fc8181; --assoc:#f6ad55; --venture:#feb2b2; --outside:#a0aec0; --foreign:#68d391; --govnode:#63b3ed; --public:#b794f4;
+  color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#14171b; --panel:#1c2026; --fg:#e7eaee; --muted:#9aa4ae; --line:#2e343c;
+  --money:#ecc94b; --gov:#63b3ed; --tie:#6b7480;
+  --family:#fc8181; --assoc:#f6ad55; --venture:#feb2b2; --outside:#a0aec0; --foreign:#68d391; --govnode:#63b3ed; --public:#b794f4;
+  color-scheme:dark}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:14px;line-height:1.5;margin:0}
+.wrap{padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:16px;max-width:1500px;margin:0 auto;display:flex;flex-direction:column;gap:12px}
+header h1{font-weight:800;font-size:1.6rem;margin:0;letter-spacing:-.01em;text-wrap:balance}
+header p{margin:.25rem 0 0;color:var(--muted);max-width:75ch}
+.bar{display:flex;flex-wrap:wrap;gap:8px 18px;align-items:center}
+.bar label{display:flex;gap:6px;align-items:center;cursor:pointer;user-select:none}
+.sw{display:inline-block;width:22px;height:0;border-top:3px solid}
+.sw.money{border-color:var(--money)} .sw.gov{border-color:var(--gov)} .sw.tie{border-color:var(--tie);border-top-style:dashed}
+.legend{display:flex;flex-wrap:wrap;gap:6px 14px;color:var(--muted);font-size:12.5px}
+.legend span{display:flex;align-items:center;gap:6px}
+.dot{width:11px;height:11px;border-radius:50%;display:inline-block}
+.main{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:12px;min-height:0}
+@media (max-width:900px){.main{grid-template-columns:minmax(0,1fr)}}
+.stage{background:var(--panel);border:1px solid var(--line);border-radius:6px;position:relative;height:72vh;min-height:480px;overflow:hidden}
+svg{width:100%;height:100%;display:block;cursor:grab}
+svg:active{cursor:grabbing}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:14px 16px;overflow:auto;max-height:72vh;min-width:0}
+@media (max-width:900px){.panel{max-height:none}}
+.panel h2{margin:0 0 2px;font-size:1.15rem;font-weight:800}
+.kind{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.note{margin:.5rem 0 .75rem}
+.conn{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+.conn li{border-left:3px solid var(--tie);padding:2px 0 2px 10px}
+.conn li.money{border-color:var(--money)} .conn li.gov{border-color:var(--gov)}
+.conn .who{font-weight:600}
+.conn .who button{all:unset;cursor:pointer;text-decoration:underline;text-underline-offset:2px}
+.conn .who button:focus-visible{outline:2px solid var(--gov);outline-offset:2px}
+.amt{font-family:var(--font-mono);font-size:12.5px;color:var(--money);font-variant-numeric:tabular-nums}
+.deny{color:var(--muted);font-size:12.5px;font-style:italic}
+.hint{color:var(--muted);font-size:12.5px}
+.zoom{position:absolute;right:max(10px,env(safe-area-inset-right,0px));bottom:10px;display:flex;gap:6px}
+.zoom button{font:600 14px var(--font-mono);width:32px;height:32px;border-radius:4px;border:1px solid var(--line);background:var(--bg);color:var(--fg);cursor:pointer}
+.zoom button:focus-visible{outline:2px solid var(--gov)}
+text.lbl{font-family:var(--font-body);font-size:11px;font-weight:600;fill:var(--fg);paint-order:stroke;stroke:var(--panel);stroke-width:3px;pointer-events:none}
+text.elbl{font-family:var(--font-mono);font-size:9.5px;fill:var(--money);paint-order:stroke;stroke:var(--panel);stroke-width:3px;pointer-events:none}
+.faded{opacity:.12}
+footer{color:var(--muted);font-size:12px;max-width:110ch}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header>
+    <h1>Trump Money Web</h1>
+    <p>Family ties, money flows and government actions as presented in Coffeezilla's <em>Investigating The President</em>. Click any box for its connections. Drag to rearrange, scroll or pinch to zoom.</p>
+  </header>
+
+  <div class="bar" role="group" aria-label="Show connection types">
+    <label><input type="checkbox" id="f-money" checked> <span class="sw money"></span> Money flow</label>
+    <label><input type="checkbox" id="f-gov" checked> <span class="sw gov"></span> Government action</label>
+    <label><input type="checkbox" id="f-tie" checked> <span class="sw tie"></span> Role / relationship</label>
+    <label><input type="checkbox" id="f-amt" checked> Show amounts</label>
+  </div>
+  <div class="legend" id="legend"></div>
+
+  <div class="main">
+    <div class="stage" id="stage">
+      <svg id="svg" role="img" aria-label="Network diagram of Trump family ties and money flows"></svg>
+      <div class="zoom">
+        <button id="z-in" aria-label="Zoom in">+</button>
+        <button id="z-out" aria-label="Zoom out">−</button>
+        <button id="z-fit" aria-label="Reset view">⤢</button>
+      </div>
+    </div>
+    <aside class="panel" id="panel" aria-live="polite"></aside>
+  </div>
+
+  <footer>Source: Coffeezilla, "Investigating The President" (youtube.com/watch?v=W4PIkmjwGsQ), which cites the Wall Street Journal, New York Times, Wired, ProPublica, Forbes and financial disclosures. These are the video's claims, not independently verified. The video states that everyone named denies wrongdoing and that nothing in it accuses anyone of a crime. Dollar figures are approximate and "reportedly" where the video says so.</footer>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+<script>
+const GROUPS = {
+  family:  {name:"Trump family",              v:"--family"},
+  assoc:   {name:"Associates & envoys",       v:"--assoc"},
+  venture: {name:"Trump-linked ventures",     v:"--venture"},
+  outside: {name:"Outside companies & investors", v:"--outside"},
+  foreign: {name:"Foreign governments & royals",  v:"--foreign"},
+  gov:     {name:"US government & regulators",    v:"--govnode"},
+  public:  {name:"Public / retail investors",     v:"--public"}
+};
+
+const NODES = [
+  {id:"trump",label:"Donald Trump",g:"family",r:22,note:"Per his financial disclosures: about $1.4B from crypto out of about $2.2B total income, possibly one of his most profitable years. Signed the Strategic Bitcoin Reserve order; appoints the regulators of several of these industries."},
+  {id:"melania",label:"Melania Trump",g:"family",note:"Launched her own meme coin days after $TRUMP."},
+  {id:"donjr",label:"Donald Trump Jr.",g:"family",r:16,note:"Forbes: about 6× richer since the election."},
+  {id:"eric",label:"Eric Trump",g:"family",r:16,note:"Forbes: about 10× richer since the election. Repeatedly cites the need to 'beat China'."},
+  {id:"kushner",label:"Jared Kushner",g:"assoc",note:"Son-in-law and unofficial 'peace envoy'. With no official title he files no financial disclosures and has no ethics oversight or divestment requirement."},
+  {id:"switkoff",label:"Steve Witkoff",g:"assoc",note:"US Special Envoy to the Middle East."},
+  {id:"zwitkoff",label:"Zach Witkoff",g:"assoc",note:"World Liberty Financial co-founder; Steve Witkoff's son."},
+  {id:"herro",label:"Chase Herro",g:"assoc",note:"WLF co-founder, shown saying you can sell anything 'if the story's right'."},
+
+  {id:"trumpcoin",label:"$TRUMP coin",g:"venture",note:"Launched two days before the inauguration. Down about 95%. Top holders were offered a dinner with the president.",deny:"White House: the president abides by all conflict-of-interest laws."},
+  {id:"melcoin",label:"$MELANIA coin",g:"venture",note:"Down about 99%."},
+  {id:"wlf",label:"World Liberty Financial",g:"venture",r:20,note:"Family crypto venture started shortly before the 2024 election. Sells the WLFI governance token and the USD1 stablecoin; its promised trading and lending app hasn't launched."},
+  {id:"usd1",label:"USD1 stablecoin",g:"venture",r:16,note:"WLF's digital dollar. Went from brand new to a huge stablecoin after the MGX–Binance deal. Marketed as the 'second largest GENIUS-compliant stablecoin'."},
+  {id:"tmtg",label:"Trump Media (TMTG)",g:"venture",r:18,note:"Mostly owned by Trump's revocable trust. Runs Truth Social; sells a real-time 'market-moving posts' feed for $100,000/month; launched 'non-woke' Truth Social ETFs, Truth+ streaming and Truth Predict (flopped). Raised $2.5B for a Bitcoin reserve. A few million dollars of revenue against $712M in losses."},
+  {id:"ambtc",label:"American Bitcoin",g:"venture",note:"Bitcoin treasury and mining company. The family is linked to about five Bitcoin treasury companies. Stock performing poorly."},
+  {id:"affinity",label:"Affinity Partners",g:"venture",note:"Kushner's fund, reportedly raising $5B from Gulf states (New York Times)."},
+  {id:"c1789",label:"1789 Capital",g:"venture",note:"Venture firm; reportedly $1B+ under management and 200%+ returns.",deny:"1789: minority, purely economic investments; 'we don't have to call the government'."},
+  {id:"spac",label:"Trump sons' SPAC",g:"venture",note:"Likely New America Acquisition I Corp. Raising $300M. Its SEC filing said it would target companies benefiting from government contracts and preferential procurement; that language was removed the same day."},
+  {id:"qgolf",label:"Qatar golf resort",g:"venture",note:"Trump family luxury golf-course deal, part of a project worth about $5.5B."},
+  {id:"pacs",label:"Trump PACs & inauguration",g:"venture",note:"Campaign, inauguration fund, PACs, plus sponsorships of the military parade and the White House ballroom."},
+
+  {id:"sun",label:"Justin Sun",g:"outside",note:"Largest public WLF investor and later adviser. Has since split with WLF, calling it a 'personal ATM' and an 'absurd governance scam'.",deny:"WLF denies Sun's accusations; both sides are suing."},
+  {id:"alt5",label:"ALT5 Sigma",g:"outside",note:"Run by the same people as WLF. Stock fell about 94% in a year; renamed AI Financial Corporation."},
+  {id:"binance",label:"Binance",g:"outside",r:16,note:"Largest crypto exchange. Listed USD1 early and paid customers about 20% a year to hold it; WSJ tied each big jump in USD1 usage to Binance.",deny:"WLF: standard stablecoin marketing."},
+  {id:"cz",label:"Changpeng Zhao (CZ)",g:"outside",note:"Binance founder. Says he did nothing to get a pardon, but that Binance needed one to operate properly in the US."},
+  {id:"hut8",label:"Hut 8",g:"outside",note:"Bitcoin miner and energy-infrastructure company."},
+  {id:"metaplanet",label:"Metaplanet",g:"outside",note:"Japanese Bitcoin treasury company."},
+  {id:"cumberland",label:"Cumberland (Don Wilson)",g:"outside",note:"Crypto trading firm.",deny:"Cumberland denies any link between its TMTG investment and the SEC dismissal."},
+  {id:"cryptocom",label:"Crypto.com",g:"outside",note:"Crypto exchange. Got provisional approval for a national trust bank charter."},
+  {id:"exchanges",label:"Crypto exchanges",g:"outside",note:"Coinbase, Kraken, Gemini and others (Binance shown separately)."},
+  {id:"tae",label:"TAE Technologies",g:"outside",note:"Nuclear fusion company; not yet commercially viable and heavily dependent on regulation."},
+  {id:"polymarket",label:"Polymarket",g:"outside",note:"Prediction market, top of the App Store finance chart."},
+  {id:"kalshi",label:"Kalshi",g:"outside",note:"Prediction market. Its CEO couldn't explain what Don Jr. does as an adviser."},
+  {id:"vulcan",label:"Vulcan Elements",g:"outside",note:"Rare-earth magnet company."},
+  {id:"foundation",label:"Foundation Future Industries",g:"outside",note:"Makes the 'Phantom' humanoid robot."},
+
+  {id:"tahnoun",label:"Sheikh Tahnoun bin Zayed",g:"foreign",r:16,note:"UAE national security adviser and brother of the UAE president.",deny:"WLF denies any political quid pro quo and says it has no influence over policy."},
+  {id:"mgx",label:"MGX (UAE)",g:"foreign",note:"UAE investment firm chaired by Tahnoun. Also an investor in the Stargate AI data-center project.",deny:"WLF: MGX chose USD1 'on its merits'; 'unfair to hold a private company to arbitrary standards'."},
+  {id:"uae",label:"United Arab Emirates",g:"foreign"},
+  {id:"saudi",label:"Saudi PIF",g:"foreign",note:"Saudi Arabia's Public Investment Fund."},
+  {id:"qatar",label:"Qatar",g:"foreign"},
+
+  {id:"sec",label:"SEC",g:"gov",r:16,note:"Securities regulator. Trump nominated a new pro-crypto commissioner."},
+  {id:"occ",label:"OCC",g:"gov",note:"Federal bank regulator."},
+  {id:"cftc",label:"CFTC (Mike Selig)",g:"gov",note:"Commodities regulator; Trump-appointed chair. Treats sports and other bets as financial 'event contracts'.",deny:"Selig: 'we treat all market participants alike'."},
+  {id:"congress",label:"GENIUS / CLARITY Acts",g:"gov",note:"New federal stablecoin and crypto-market laws."},
+  {id:"usgov",label:"US government",g:"gov",r:16,note:"Pentagon, State Department and other agencies."},
+
+  {id:"retail",label:"Retail investors",g:"public",r:16,note:"Most ordinary investors in these ventures lost money while the family made billions."}
+];
+
+// type: money | gov | tie.  amt in $ millions (optional) scales line width.
+const LINKS = [
+  // meme coins
+  {s:"trumpcoin",t:"trump",type:"money",amt:600,lbl:"~$600M",d:"About $600M to Trump from the coin."},
+  {s:"melcoin",t:"melania",type:"money",amt:6,lbl:"~$6M",d:"About $6M reported from her coin and NFTs."},
+  {s:"retail",t:"trumpcoin",type:"money",d:"Buyers mostly lost money as the coin fell ~95%."},
+  {s:"retail",t:"melcoin",type:"money",d:"Buyers mostly lost money as the coin fell ~99%."},
+  {s:"melania",t:"trump",type:"tie",d:"Spouse."},
+  {s:"donjr",t:"trump",type:"tie",d:"Son."},
+  {s:"eric",t:"trump",type:"tie",d:"Son."},
+  {s:"kushner",t:"trump",type:"tie",d:"Son-in-law; unofficial envoy for the administration."},
+
+  // WLF
+  {s:"trump",t:"wlf",type:"tie",d:"Family venture; Trump was its 'chief crypto advocate'."},
+  {s:"zwitkoff",t:"wlf",type:"tie",d:"Co-founder."},
+  {s:"herro",t:"wlf",type:"tie",d:"Co-founder."},
+  {s:"switkoff",t:"zwitkoff",type:"tie",d:"Father."},
+  {s:"switkoff",t:"wlf",type:"tie",d:"Held a stake; WLF says he has since divested."},
+  {s:"wlf",t:"usd1",type:"tie",d:"Issues USD1."},
+  {s:"retail",t:"wlf",type:"money",amt:550,lbl:"$550M",d:"WLFI token sales sold out at $550M after the election (weak before it)."},
+  {s:"sun",t:"wlf",type:"money",amt:75,lbl:"$75M",d:"$75M investment while facing SEC fraud charges; became an adviser."},
+  {s:"tahnoun",t:"wlf",type:"money",amt:500,lbl:"$500M / 49%",d:"$500M for a 49% stake, signed secretly four days before the inauguration (WSJ)."},
+  {s:"usd1",t:"wlf",type:"money",amt:159,lbl:"$159M/yr",d:"Interest earned on USD1 reserves; WLF claims $159M a year."},
+  {s:"wlf",t:"trump",type:"money",d:"WLF revenues help pay the president and his family."},
+  {s:"alt5",t:"wlf",type:"money",amt:1500,lbl:"$1.5B",d:"$1.5B deal with WLF; both run by the same people, giving a 'dual incentive' to pump WLFI with retail money."},
+  {s:"alt5",t:"trump",type:"money",amt:500,lbl:"~$500M",d:"Reportedly $500M to a Trump family entity."},
+  {s:"alt5",t:"zwitkoff",type:"money",amt:90,lbl:"~$90M",d:"Reportedly $90M to the Witkoff family."},
+
+  // UAE / Binance
+  {s:"tahnoun",t:"mgx",type:"tie",d:"Chairman."},
+  {s:"tahnoun",t:"uae",type:"tie",d:"National security adviser; brother of the UAE president."},
+  {s:"mgx",t:"binance",type:"money",amt:2000,lbl:"$2B in USD1",d:"$2B investment in Binance, settled in USD1. MGX's link to WLF's 49% owner wasn't disclosed."},
+  {s:"binance",t:"usd1",type:"tie",d:"Early listing; ~20% yield promotions that drove USD1 adoption (WSJ)."},
+  {s:"cz",t:"binance",type:"tie",d:"Founder."},
+  {s:"usgov",t:"uae",type:"gov",d:"Approved AI-chip deals the US had long refused, shortly after the crypto deals began."},
+  {s:"trump",t:"uae",type:"gov",d:"Said a currency swap to help the UAE during the Iran crisis was under consideration ('a good ally')."},
+  {s:"sec",t:"binance",type:"gov",d:"Dropped its lawsuit against Binance."},
+  {s:"trump",t:"cz",type:"gov",d:"Pardoned CZ. Trump: 'I don't know who he is.'"},
+  {s:"sec",t:"sun",type:"gov",d:"Fraud case dismissed and settled after Trump took office."},
+
+  // laws & regulators
+  {s:"trump",t:"congress",type:"gov",d:"Pushed the GENIUS Act, reportedly with late-night calls asking lawmakers for votes."},
+  {s:"congress",t:"usd1",type:"gov",d:"New stablecoin rules USD1 now markets itself as compliant with."},
+  {s:"occ",t:"wlf",type:"gov",d:"Provisional bank-charter approval.",deny:"WLF: approved by career staff, no special treatment."},
+  {s:"trump",t:"occ",type:"gov",d:"Appoints the regulators."},
+  {s:"trump",t:"sec",type:"gov",d:"Nominated a pro-crypto commissioner."},
+  {s:"trump",t:"cftc",type:"gov",d:"Appointed chair Mike Selig."},
+  {s:"sec",t:"exchanges",type:"gov",d:"Dropped 12+ cases against exchanges soon after the inauguration."},
+  {s:"exchanges",t:"pacs",type:"money",lbl:"$1M+ each",d:"Several gave $1M+ to the campaign or inauguration and sponsored the parade and ballroom."},
+  {s:"pacs",t:"trump",type:"tie",d:"Support Trump."},
+
+  // Middle East envoys & gifts
+  {s:"kushner",t:"affinity",type:"tie",d:"Runs the fund."},
+  {s:"saudi",t:"affinity",type:"money",amt:2000,lbl:"$2B",d:"$2B already invested; more Gulf money reportedly being sought."},
+  {s:"kushner",t:"switkoff",type:"tie",d:"Travel together to closed-door Middle East talks."},
+  {s:"qatar",t:"trump",type:"money",amt:400,lbl:"$400M plane",d:"Luxury plane offered for use as Air Force One, then for his presidential library."},
+  {s:"qatar",t:"usgov",type:"money",amt:1960,lbl:"$1.96B arms",d:"$1.96B arms deal negotiated at the same time, on favorable terms."},
+  {s:"usgov",t:"qatar",type:"gov",d:"State Department approved about $5B more in possible arms sales (precision kill systems, Patriot replenishment)."},
+  {s:"trump",t:"qgolf",type:"tie",d:"Family golf-course deal."},
+  {s:"qatar",t:"qgolf",type:"tie",d:"Part of a ~$5.5B Qatar project."},
+
+  // Bitcoin & TMTG
+  {s:"eric",t:"metaplanet",type:"tie",d:"Strategic board adviser."},
+  {s:"eric",t:"ambtc",type:"tie",d:"Co-owner."},
+  {s:"donjr",t:"ambtc",type:"tie",d:"Co-owner."},
+  {s:"hut8",t:"ambtc",type:"money",d:"Handed over its mining equipment for an 80% stake; no known cash. CEO told Wired the brothers bring 'capital markets' access and 'narrative'."},
+  {s:"trump",t:"tmtg",type:"tie",d:"Majority owner via his revocable trust. Has posted about stocks by ticker; disclosures show buys before posts (his office says others manage trades)."},
+  {s:"cumberland",t:"tmtg",type:"money",d:"Investor in TMTG's $2.5B Bitcoin-reserve raise."},
+  {s:"sec",t:"cumberland",type:"gov",d:"Case dismissed with prejudice weeks before the investment."},
+  {s:"cryptocom",t:"tmtg",type:"money",amt:50,lbl:"$50M",d:"Bought $50M of TMTG stock in a 'strategic partnership'."},
+  {s:"cryptocom",t:"pacs",type:"money",amt:36,lbl:"$36M",d:"$36M to Trump-affiliated PACs."},
+  {s:"sec",t:"cryptocom",type:"gov",d:"Investigation closed with no action, months before the TMTG deal."},
+  {s:"cftc",t:"cryptocom",type:"gov",d:"Filed an amicus brief supporting Crypto.com in a prediction-market lawsuit."},
+  {s:"tmtg",t:"tae",type:"tie",lbl:"$6B merger",d:"$6B all-stock merger with the fusion company."},
+  {s:"retail",t:"tmtg",type:"money",amt:712,lbl:"$712M losses",d:"Supporters' money funds $712M in losses; the stock is way down."},
+
+  // prediction markets
+  {s:"donjr",t:"polymarket",type:"tie",d:"Board / adviser."},
+  {s:"donjr",t:"kalshi",type:"tie",d:"Strategic adviser."},
+  {s:"cftc",t:"polymarket",type:"gov",d:"Regulator; a congressman asked whether the White House pushed to drop its probe."},
+  {s:"cftc",t:"kalshi",type:"gov",d:"Regulator of event contracts."},
+
+  // sons' investments
+  {s:"donjr",t:"c1789",type:"tie",d:"Partner."},
+  {s:"c1789",t:"vulcan",type:"money",d:"Invested shortly before the government partnership was announced."},
+  {s:"usgov",t:"vulcan",type:"gov",lbl:"$1B",d:"$1B magnet-facility partnership. ProPublica: someone did call the government to get it done."},
+  {s:"donjr",t:"spac",type:"tie",d:"Adviser; stands to make tens of millions."},
+  {s:"eric",t:"spac",type:"tie",d:"Adviser; stands to make tens of millions."},
+  {s:"eric",t:"foundation",type:"tie",d:"Chief strategy adviser."},
+  {s:"usgov",t:"foundation",type:"gov",amt:24,lbl:"$24M",d:"$24M Pentagon contract for the Phantom robot. Wired: the contracts predate how Fox presented them."}
+];
+
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const byId = Object.fromEntries(NODES.map(n => [n.id, n]));
+const panel = document.getElementById("panel");
+
+// legend
+document.getElementById("legend").innerHTML = Object.entries(GROUPS)
+  .map(([k,g]) => `<span><i class="dot" style="background:var(${g.v})"></i>${g.name}</span>`).join("");
+
+const svg = d3.select("#svg");
+const stage = document.getElementById("stage");
+let W = stage.clientWidth, H = stage.clientHeight;
+
+const defs = svg.append("defs");
+["money","gov","tie"].forEach(t => {
+  defs.append("marker").attr("id","arrow-"+t).attr("viewBox","0 -5 10 10").attr("refX",10).attr("refY",0)
+    .attr("markerWidth",6).attr("markerHeight",6).attr("orient","auto")
+    .append("path").attr("d","M0,-5L10,0L0,5").attr("class","mk-"+t);
+});
+
+const root = svg.append("g");
+const zoom = d3.zoom().scaleExtent([0.25, 4]).on("zoom", e => root.attr("transform", e.transform));
+svg.call(zoom).on("dblclick.zoom", null);
+
+const links = LINKS.map(l => ({...l, source:l.s, target:l.t}));
+const nodes = NODES.map(n => ({...n}));
+const radius = n => n.r || 12;
+const width = l => l.type === "money" ? (l.amt ? 1.5 + Math.sqrt(l.amt)/7 : 1.8) : l.type === "gov" ? 1.6 : 1.2;
+
+const linkG = root.append("g");
+const elblG = root.append("g");
+const nodeG = root.append("g");
+
+const linkSel = linkG.selectAll("path").data(links).join("path")
+  .attr("fill","none").attr("stroke-width", width)
+  .attr("stroke-dasharray", l => l.type === "tie" ? "4 4" : null)
+  .attr("marker-end", l => l.type === "tie" ? null : `url(#arrow-${l.type})`);
+
+const elblSel = elblG.selectAll("text").data(links.filter(l => l.lbl)).join("text")
+  .attr("class","elbl").attr("text-anchor","middle").text(l => l.lbl);
+
+const nodeSel = nodeG.selectAll("g").data(nodes).join("g")
+  .attr("tabindex",0).attr("role","button").attr("aria-label", d => d.label)
+  .style("cursor","pointer")
+  .on("click", (e,d) => select(d.id))
+  .on("keydown", (e,d) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); select(d.id); } })
+  .on("dblclick", (e,d) => { d.fx = d.fy = null; sim.alphaTarget(0.1).restart(); setTimeout(()=>sim.alphaTarget(0),400); });
+
+nodeSel.append("circle").attr("r", radius).attr("stroke-width",2);
+nodeSel.append("text").attr("class","lbl").attr("text-anchor","middle")
+  .attr("dy", d => radius(d) + 13).text(d => d.label);
+
+nodeSel.call(d3.drag()
+  .on("start", (e,d) => { if (!e.active) sim.alphaTarget(0.2).restart(); d.fx = d.x; d.fy = d.y; })
+  .on("drag",  (e,d) => { d.fx = e.x; d.fy = e.y; })
+  .on("end",   (e,d) => { if (!e.active) sim.alphaTarget(0); }));
+
+function paint(){
+  defs.selectAll(".mk-money").attr("fill", css("--money"));
+  defs.selectAll(".mk-gov").attr("fill", css("--gov"));
+  defs.selectAll(".mk-tie").attr("fill", css("--tie"));
+  linkSel.attr("stroke", l => css("--" + l.type));
+  nodeSel.select("circle").attr("fill", d => css(GROUPS[d.g].v)).attr("stroke", css("--panel"));
+}
+paint();
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change", paint);
+new MutationObserver(paint).observe(document.documentElement, {attributes:true, attributeFilter:["data-theme"]});
+
+const sim = d3.forceSimulation(nodes)
+  .force("link", d3.forceLink(links).id(d => d.id).distance(l => l.type === "tie" ? 70 : 110).strength(0.5))
+  .force("charge", d3.forceManyBody().strength(-520))
+  .force("collide", d3.forceCollide().radius(d => radius(d) + 26))
+  .force("x", d3.forceX(0).strength(0.04))
+  .force("y", d3.forceY(0).strength(0.06))
+  .on("tick", tick);
+
+function edgePath(l){
+  const sx=l.source.x, sy=l.source.y, tx=l.target.x, ty=l.target.y;
+  const dx=tx-sx, dy=ty-sy, dist=Math.hypot(dx,dy)||1;
+  const rT = radius(l.target) + 3, rS = radius(l.source);
+  const ex = tx - dx/dist*rT, ey = ty - dy/dist*rT;
+  const bx = sx + dx/dist*rS, by = sy + dy/dist*rS;
+  // slight curve so opposite-direction edges don't overlap
+  const k = l.type === "tie" ? 0 : 0.12;
+  const mx = (bx+ex)/2 - dy*k, my = (by+ey)/2 + dx*k;
+  l._mx = (bx + 2*mx + ex)/4; l._my = (by + 2*my + ey)/4;
+  return `M${bx},${by}Q${mx},${my} ${ex},${ey}`;
+}
+function tick(){
+  linkSel.attr("d", edgePath);
+  elblSel.attr("x", l => l._mx).attr("y", l => l._my - 3);
+  nodeSel.attr("transform", d => `translate(${d.x},${d.y})`);
+}
+
+function fit(animate=true){
+  W = stage.clientWidth; H = stage.clientHeight;
+  const xs = nodes.map(n=>n.x), ys = nodes.map(n=>n.y);
+  const x0=Math.min(...xs)-70, x1=Math.max(...xs)+70, y0=Math.min(...ys)-50, y1=Math.max(...ys)+60;
+  const s = Math.min(W/(x1-x0), H/(y1-y0), 1.6);
+  const t = d3.zoomIdentity.translate(W/2 - s*(x0+x1)/2, H/2 - s*(y0+y1)/2).scale(s);
+  (animate ? svg.transition().duration(500) : svg).call(zoom.transform, t);
+}
+sim.tick(300); tick(); fit(false);
+
+document.getElementById("z-in").onclick = () => svg.transition().duration(250).call(zoom.scaleBy, 1.3);
+document.getElementById("z-out").onclick = () => svg.transition().duration(250).call(zoom.scaleBy, 1/1.3);
+document.getElementById("z-fit").onclick = () => fit(true);
+addEventListener("resize", () => fit(false));
+
+// filters
+const show = {money:true, gov:true, tie:true, amt:true};
+["money","gov","tie","amt"].forEach(k => {
+  const el = document.getElementById("f-"+k);
+  el.addEventListener("change", () => { show[k] = el.checked; applyVis(); });
+});
+let current = null;
+function applyVis(){
+  const vis = l => show[l.type];
+  const nb = new Set();
+  if (current) links.forEach(l => { if (vis(l) && (l.source.id===current || l.target.id===current)) { nb.add(l.source.id); nb.add(l.target.id); } });
+  linkSel.attr("display", l => vis(l) ? null : "none")
+    .classed("faded", l => current && !(l.source.id===current || l.target.id===current));
+  elblSel.attr("display", l => vis(l) && show.amt ? null : "none")
+    .classed("faded", l => current && !(l.source.id===current || l.target.id===current));
+  nodeSel.classed("faded", d => current && !nb.has(d.id) && d.id !== current);
+}
+
+const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+function select(id){
+  current = (current === id) ? null : id;
+  applyVis();
+  if (!current) return renderIntro();
+  const n = byId[id];
+  const rows = links.filter(l => show[l.type] && (l.source.id===id || l.target.id===id)).map(l => {
+    const out = l.source.id === id, other = out ? l.target : l.source;
+    const dir = l.type === "tie" ? "↔" : out ? "→" : "←";
+    return `<li class="${l.type}">
+      <div class="who">${dir} <button data-id="${other.id}">${esc(other.label)}</button> ${l.lbl ? `<span class="amt">${esc(l.lbl)}</span>` : ""}</div>
+      <div>${esc(l.d)}</div>${l.deny ? `<div class="deny">Denial: ${esc(l.deny)}</div>` : ""}</li>`;
+  }).join("");
+  panel.innerHTML = `<div class="kind">${esc(GROUPS[n.g].name)}</div><h2>${esc(n.label)}</h2>
+    ${n.note ? `<p class="note">${esc(n.note)}</p>` : ""}
+    ${n.deny ? `<p class="deny">Denial: ${esc(n.deny)}</p>` : ""}
+    <ul class="conn">${rows || "<li>No visible connections with the current filters.</li>"}</ul>
+    <p class="hint">Click the same box again, or empty space, to clear.</p>`;
+  panel.querySelectorAll("button[data-id]").forEach(b => b.onclick = () => { current = null; select(b.dataset.id); });
+}
+function renderIntro(){
+  const total = LINKS.filter(l => l.type==="money").length;
+  panel.innerHTML = `<div class="kind">How to read it</div><h2>Follow the money</h2>
+    <p class="note"><b style="color:var(--money)">Solid gold arrows</b> are money moving, thicker for bigger amounts.
+    <b style="color:var(--gov)">Blue arrows</b> are government actions: dropped cases, pardons, approvals, contracts.
+    Dashed grey lines are roles and relationships.</p>
+    <p class="note">${NODES.length} people and organisations, ${LINKS.length} connections, ${total} of them money flows.</p>
+    <p class="note">Start with <button class="linkish" data-id="wlf">World Liberty Financial</button>, the hub of the biggest flows, or <button class="linkish" data-id="trump">Donald Trump</button>.</p>
+    <p class="hint">Drag boxes to rearrange. Double-click a dragged box to let it float again.</p>`;
+  panel.querySelectorAll("button[data-id]").forEach(b => { b.style.cssText="all:unset;cursor:pointer;text-decoration:underline;font-weight:600"; b.onclick = () => select(b.dataset.id); });
+}
+svg.on("click", e => { if (e.target === svg.node()) { current = null; applyVis(); renderIntro(); } });
+renderIntro();
+</script>
+</body>
+</html>
